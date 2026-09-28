@@ -374,6 +374,33 @@ def translate_word():
     return jsonify(result)
 
 
+COMMON_PHRASAL_VERB_ROOTS = {
+    'act', 'add', 'back', 'blow', 'break', 'bring', 'build', 'call', 'carry', 'check',
+    'clean', 'clear', 'come', 'count', 'cut', 'do', 'draw', 'drop', 'end', 'fall',
+    'fill', 'find', 'get', 'give', 'go', 'grow', 'hand', 'hang', 'hold', 'keep',
+    'kick', 'knock', 'lay', 'lead', 'let', 'look', 'make', 'pass', 'pay', 'pick',
+    'point', 'pull', 'put', 'run', 'set', 'show', 'shut', 'stand', 'start', 'step',
+    'take', 'talk', 'think', 'throw', 'turn', 'use', 'walk', 'work', 'write'
+}
+
+def get_base_verb(word):
+    word = word.lower().strip()
+    if word in COMMON_PHRASAL_VERB_ROOTS:
+        return word
+    if word.endswith('ied'):
+        stem = word[:-3] + 'y'
+        if stem in COMMON_PHRASAL_VERB_ROOTS:
+            return stem
+    for suffix in ['ing', 'ed', 'es', 's']:
+        if word.endswith(suffix):
+            stem = word[:-len(suffix)]
+            if stem in COMMON_PHRASAL_VERB_ROOTS:
+                return stem
+            if (stem + 'e') in COMMON_PHRASAL_VERB_ROOTS:
+                return stem + 'e'
+    return None
+
+
 def detect_phrasal_verb(clean_word, raw_word, sentence):
     if not sentence:
         return None
@@ -389,71 +416,21 @@ def detect_phrasal_verb(clean_word, raw_word, sentence):
                     "possible_meanings": phrase_info.get("possible_meanings", [])
                 }
 
-    for particle in PARTICLES:
-        pattern = r'\b(' + re.escape(clean_word) + r'\s+' + re.escape(particle) + r')\b'
-        match = re.search(pattern, sentence, re.IGNORECASE)
-        if match:
-            matched_phrase = match.group(1)
-            return {
-                "phrase": matched_phrase,
-                "phrase_type": "Phrasal Verb",
-                "translation": None,
-                "possible_meanings": []
-            }
+    # Only check particle combinations if clean_word is an actual English verb root!
+    base_v = get_base_verb(clean_word)
+    if base_v:
+        for particle in PARTICLES:
+            pattern = r'\b(' + re.escape(clean_word) + r'\s+' + re.escape(particle) + r')\b'
+            match = re.search(pattern, sentence, re.IGNORECASE)
+            if match:
+                matched_phrase = match.group(1)
+                return {
+                    "phrase": matched_phrase,
+                    "phrase_type": "Phrasal Verb",
+                    "translation": None,
+                    "possible_meanings": []
+                }
 
-    return None
-
-
-def fetch_gemini_translation(raw_word, clean_word, sentence, full_text, detected_phrase):
-    phrase_prompt = ""
-    if detected_phrase:
-        phrase_prompt = f"Note: The word '{raw_word}' appears to be part of the phrasal verb or expression '{detected_phrase['phrase']}' in this sentence."
-
-    prompt = f"""You are an expert English-Polish lexicographer and language tutor.
-Analyze the word "{raw_word}" (base form: "{clean_word}") in the following context:
-
-Sentence: "{sentence}"
-Full Text Context: "{full_text[:300]}"
-{phrase_prompt}
-
-Instructions:
-1. If the word is part of a phrasal verb or idiomatic expression (e.g., "roll out", "stay out of", "tit for tat"), set "is_phrase": true and translate the FULL PHRASE into Polish.
-2. Otherwise set "is_phrase": false and translate the word in context into Polish.
-3. Provide standard IPA phonetic pronunciation.
-4. Translate the sentence into Polish.
-5. List up to 3 possible Polish meanings.
-6. Return ONLY valid JSON matching this schema:
-
-{{
-  "word": "{raw_word}",
-  "clean_word": "{clean_word}",
-  "is_phrase": true/false,
-  "phrase": "full phrase or null",
-  "phrase_type": "Phrasal Verb / Idiom / Collocation or null",
-  "translation": "Polish translation",
-  "pronunciation": "/IPA/",
-  "context_example": "{sentence}",
-  "context_example_pl": "tłumaczenie zdania po polsku",
-  "possible_meanings": ["znaczenie 1", "znaczenie 2"]
-}}"""
-
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
-    payload = {
-        "contents": [{"parts": [{"text": prompt}]}],
-        "generationConfig": {
-            "temperature": 0.2,
-            "responseMimeType": "application/json"
-        }
-    }
-    
-    response = requests.post(url, json=payload, timeout=8)
-    if response.status_code == 200:
-        res_data = response.json()
-        text_content = res_data['candidates'][0]['content']['parts'][0]['text']
-        text_content = re.sub(r'^```json\s*|\s*```$', '', text_content.strip())
-        parsed = json.loads(text_content)
-        parsed['source'] = 'ai'
-        return parsed
     return None
 
 
@@ -462,13 +439,15 @@ def translate_single_text(text):
         return None, []
     q = requests.utils.quote(text)
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
+        'Accept-Language': 'en-US,en;q=0.9,pl;q=0.8',
+        'Referer': 'https://translate.google.com/'
     }
 
-    # Primary: translate.googleapis.com dict-chrome-ex with dt=t and dt=bd (dictionary & alternative meanings)
+    # Primary: translate.googleapis.com dict-chrome-ex with dt=t and dt=bd
     try:
         url1 = f"https://translate.googleapis.com/translate_a/single?client=dict-chrome-ex&sl=en&tl=pl&dt=t&dt=bd&q={q}"
-        r1 = requests.get(url1, headers=headers, timeout=5, verify=False)
+        r1 = requests.get(url1, headers=headers, timeout=5)
         if r1.status_code == 200:
             data = r1.json()
             main_trans = None
@@ -481,7 +460,6 @@ def translate_single_text(text):
                     if len(group) > 1 and group[1]:
                         dict_meanings.extend(group[1])
 
-            # Filter unique meanings while preserving order
             unique_meanings = []
             for m in dict_meanings:
                 if m not in unique_meanings:
@@ -497,30 +475,31 @@ def translate_single_text(text):
     except Exception as e:
         print(f"[Translate Endpoint 1 Error] {e}")
 
-    # Endpoint 2: clients5.google.com
+    # Endpoint 2: MyMemory API
     try:
-        url2 = f"https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl=en&tl=pl&q={q}"
-        r2 = requests.get(url2, headers=headers, timeout=4, verify=False)
+        url2 = f"https://api.mymemory.translated.net/get?q={q}&langpair=en|pl"
+        r2 = requests.get(url2, headers=headers, timeout=4)
         if r2.status_code == 200:
             data2 = r2.json()
-            if isinstance(data2, list) and data2 and isinstance(data2[0], str):
-                t = data2[0].strip()
-                if t and t.lower() != text.lower():
-                    return t, []
-    except Exception as e:
-        print(f"[Translate Endpoint 2 Error] {e}")
-
-    # Endpoint 3: MyMemory API
-    try:
-        url3 = f"https://api.mymemory.translated.net/get?q={q}&langpair=en|pl"
-        r3 = requests.get(url3, headers=headers, timeout=4, verify=False)
-        if r3.status_code == 200:
-            data3 = r3.json()
-            t = data3.get('responseData', {}).get('translatedText', '')
+            t = data2.get('responseData', {}).get('translatedText', '')
             if t and t.lower() != text.lower():
                 clean_t = html.unescape(t).strip()
                 clean_t = re.sub(r'\(.*?\)', '', clean_t).strip()
                 return clean_t or t, []
+    except Exception as e:
+        print(f"[Translate Endpoint 2 Error] {e}")
+
+    # Endpoint 3: Google mtranslate HTML fallback
+    try:
+        url3 = f"https://translate.google.com/m?sl=en&tl=pl&q={q}"
+        r3 = requests.get(url3, headers=headers, timeout=4)
+        if r3.status_code == 200:
+            soup = BeautifulSoup(r3.text, 'html.parser')
+            res_div = soup.find('div', class_='result-container') or soup.find('div', class_='t0')
+            if res_div and res_div.text.strip():
+                t = res_div.text.strip()
+                if t.lower() != text.lower():
+                    return t, []
     except Exception as e:
         print(f"[Translate Endpoint 3 Error] {e}")
 
@@ -532,13 +511,15 @@ def translate_sentence_text(sentence):
         return None
     q = requests.utils.quote(sentence)
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
+        'Accept-Language': 'en-US,en;q=0.9,pl;q=0.8',
+        'Referer': 'https://translate.google.com/'
     }
 
     # Primary Endpoint: translate.googleapis.com
     try:
         url = f"https://translate.googleapis.com/translate_a/single?client=dict-chrome-ex&sl=en&tl=pl&dt=t&q={q}"
-        r = requests.get(url, headers=headers, timeout=6, verify=False)
+        r = requests.get(url, headers=headers, timeout=6)
         if r.status_code == 200:
             data = r.json()
             if data and isinstance(data, list) and len(data) > 0 and data[0]:
@@ -548,28 +529,29 @@ def translate_sentence_text(sentence):
     except Exception as e:
         print(f"[Sentence Translate Endpoint 1 Error] {e}")
 
-    # Endpoint 2: clients5.google.com
+    # Endpoint 2: MyMemory API
     try:
-        url2 = f"https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl=en&tl=pl&q={q}"
-        r2 = requests.get(url2, headers=headers, timeout=5, verify=False)
+        url2 = f"https://api.mymemory.translated.net/get?q={q}&langpair=en|pl"
+        r2 = requests.get(url2, headers=headers, timeout=5)
         if r2.status_code == 200:
             data2 = r2.json()
-            if isinstance(data2, list) and data2 and isinstance(data2[0], str):
-                return data2[0].strip()
-    except Exception as e:
-        pass
-
-    # Endpoint 3: MyMemory API
-    try:
-        url3 = f"https://api.mymemory.translated.net/get?q={q}&langpair=en|pl"
-        r3 = requests.get(url3, headers=headers, timeout=5, verify=False)
-        if r3.status_code == 200:
-            data3 = r3.json()
-            t = data3.get('responseData', {}).get('translatedText', '')
+            t = data2.get('responseData', {}).get('translatedText', '')
             if t:
                 return html.unescape(t).strip()
     except Exception as e:
-        pass
+        print(f"[Sentence Translate Endpoint 2 Error] {e}")
+
+    # Endpoint 3: Google mtranslate HTML fallback
+    try:
+        url3 = f"https://translate.google.com/m?sl=en&tl=pl&q={q}"
+        r3 = requests.get(url3, headers=headers, timeout=5)
+        if r3.status_code == 200:
+            soup = BeautifulSoup(r3.text, 'html.parser')
+            res_div = soup.find('div', class_='result-container') or soup.find('div', class_='t0')
+            if res_div and res_div.text.strip():
+                return res_div.text.strip()
+    except Exception as e:
+        print(f"[Sentence Translate Endpoint 3 Error] {e}")
 
     return None
 
