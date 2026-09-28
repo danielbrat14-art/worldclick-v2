@@ -459,53 +459,73 @@ Instructions:
 
 def translate_single_text(text):
     if not text:
-        return None
+        return None, []
     q = requests.utils.quote(text)
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
     }
 
-    # Endpoint 1: clients5.google.com
+    # Primary: translate.googleapis.com dict-chrome-ex with dt=t and dt=bd (dictionary & alternative meanings)
     try:
-        url1 = f"https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl=en&tl=pl&q={q}"
-        r = requests.get(url1, headers=headers, timeout=4, verify=False)
-        if r.status_code == 200:
-            data = r.json()
-            if isinstance(data, list) and data and isinstance(data[0], str):
-                t = data[0].strip()
-                if t and t.lower() != text.lower():
-                    return t
+        url1 = f"https://translate.googleapis.com/translate_a/single?client=dict-chrome-ex&sl=en&tl=pl&dt=t&dt=bd&q={q}"
+        r1 = requests.get(url1, headers=headers, timeout=5, verify=False)
+        if r1.status_code == 200:
+            data = r1.json()
+            main_trans = None
+            dict_meanings = []
+            if data and isinstance(data, list) and len(data) > 0 and data[0] and len(data[0]) > 0 and data[0][0] and data[0][0][0]:
+                main_trans = data[0][0][0].strip()
+
+            if len(data) > 1 and data[1]:
+                for group in data[1]:
+                    if len(group) > 1 and group[1]:
+                        dict_meanings.extend(group[1])
+
+            # Filter unique meanings while preserving order
+            unique_meanings = []
+            for m in dict_meanings:
+                if m not in unique_meanings:
+                    unique_meanings.append(m)
+
+            if main_trans and main_trans.lower() == text.lower() and unique_meanings:
+                main_trans = unique_meanings[0]
+
+            if main_trans and main_trans.lower() != text.lower():
+                return main_trans, unique_meanings
+            elif unique_meanings:
+                return unique_meanings[0], unique_meanings
     except Exception as e:
         print(f"[Translate Endpoint 1 Error] {e}")
 
-    # Endpoint 2: translate.googleapis.com dict-chrome-ex
+    # Endpoint 2: clients5.google.com
     try:
-        url2 = f"https://translate.googleapis.com/translate_a/single?client=dict-chrome-ex&sl=en&tl=pl&dt=t&dt=bd&q={q}"
-        r = requests.get(url2, headers=headers, timeout=4, verify=False)
-        if r.status_code == 200:
-            data = r.json()
-            if data and data[0] and data[0][0] and data[0][0][0]:
-                t = data[0][0][0].strip()
+        url2 = f"https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl=en&tl=pl&q={q}"
+        r2 = requests.get(url2, headers=headers, timeout=4, verify=False)
+        if r2.status_code == 200:
+            data2 = r2.json()
+            if isinstance(data2, list) and data2 and isinstance(data2[0], str):
+                t = data2[0].strip()
                 if t and t.lower() != text.lower():
-                    return t
+                    return t, []
     except Exception as e:
         print(f"[Translate Endpoint 2 Error] {e}")
 
     # Endpoint 3: MyMemory API
     try:
         url3 = f"https://api.mymemory.translated.net/get?q={q}&langpair=en|pl"
-        r = requests.get(url3, headers=headers, timeout=4, verify=False)
-        if r.status_code == 200:
-            data = r.json()
-            t = data.get('responseData', {}).get('translatedText', '')
+        r3 = requests.get(url3, headers=headers, timeout=4, verify=False)
+        if r3.status_code == 200:
+            data3 = r3.json()
+            t = data3.get('responseData', {}).get('translatedText', '')
             if t and t.lower() != text.lower():
                 clean_t = html.unescape(t).strip()
                 clean_t = re.sub(r'\(.*?\)', '', clean_t).strip()
-                return clean_t or t
+                return clean_t or t, []
     except Exception as e:
         print(f"[Translate Endpoint 3 Error] {e}")
 
-    return None
+    return None, []
+
 
 def translate_sentence_text(sentence):
     if not sentence:
@@ -515,24 +535,37 @@ def translate_sentence_text(sentence):
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
     }
 
-    # Endpoint 1: clients5.google.com
+    # Primary Endpoint: translate.googleapis.com
     try:
-        url1 = f"https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl=en&tl=pl&q={q}"
-        r = requests.get(url1, headers=headers, timeout=5, verify=False)
+        url = f"https://translate.googleapis.com/translate_a/single?client=dict-chrome-ex&sl=en&tl=pl&dt=t&q={q}"
+        r = requests.get(url, headers=headers, timeout=6, verify=False)
         if r.status_code == 200:
             data = r.json()
-            if isinstance(data, list) and data and isinstance(data[0], str):
-                return data[0].strip()
+            if data and isinstance(data, list) and len(data) > 0 and data[0]:
+                full_t = ''.join([part[0] for part in data[0] if part and len(part) > 0 and part[0]])
+                if full_t and full_t.strip():
+                    return full_t.strip()
+    except Exception as e:
+        print(f"[Sentence Translate Endpoint 1 Error] {e}")
+
+    # Endpoint 2: clients5.google.com
+    try:
+        url2 = f"https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl=en&tl=pl&q={q}"
+        r2 = requests.get(url2, headers=headers, timeout=5, verify=False)
+        if r2.status_code == 200:
+            data2 = r2.json()
+            if isinstance(data2, list) and data2 and isinstance(data2[0], str):
+                return data2[0].strip()
     except Exception as e:
         pass
 
-    # Endpoint 2: MyMemory API
+    # Endpoint 3: MyMemory API
     try:
-        url2 = f"https://api.mymemory.translated.net/get?q={q}&langpair=en|pl"
-        r = requests.get(url2, headers=headers, timeout=5, verify=False)
-        if r.status_code == 200:
-            data = r.json()
-            t = data.get('responseData', {}).get('translatedText', '')
+        url3 = f"https://api.mymemory.translated.net/get?q={q}&langpair=en|pl"
+        r3 = requests.get(url3, headers=headers, timeout=5, verify=False)
+        if r3.status_code == 200:
+            data3 = r3.json()
+            t = data3.get('responseData', {}).get('translatedText', '')
             if t:
                 return html.unescape(t).strip()
     except Exception as e:
@@ -559,7 +592,9 @@ def fetch_dynamic_translation(raw_word, clean_word, sentence, detected_phrase):
             possible_meanings = detected_phrase.get("possible_meanings", [])
 
         if not word_pl:
-            word_pl = translate_single_text(phrase_text)
+            word_pl, meanings = translate_single_text(phrase_text)
+            if meanings:
+                possible_meanings = meanings
 
     if not word_pl:
         if clean_word in FALLBACK_DICTIONARY:
@@ -568,17 +603,22 @@ def fetch_dynamic_translation(raw_word, clean_word, sentence, detected_phrase):
             possible_meanings = dict_entry.get("possible_meanings", [])
 
     if not word_pl:
-        word_pl = translate_single_text(clean_word)
+        word_pl, meanings = translate_single_text(clean_word)
+        if meanings and not possible_meanings:
+            possible_meanings = meanings
 
     if sentence:
         sentence_pl = translate_sentence_text(sentence)
 
+    # Word Stemming Fallback if translation is missing or equals raw English word
     if not word_pl or word_pl.lower() == clean_word.lower():
-        base_word = re.sub(r'(ed|ing|s|es)$', '', clean_word)
+        base_word = re.sub(r'(ing|ed|s|es|er|ly)$', '', clean_word)
         if base_word and len(base_word) > 2 and base_word != clean_word:
-            base_pl = translate_single_text(base_word)
+            base_pl, base_meanings = translate_single_text(base_word)
             if base_pl:
-                word_pl = f"{base_pl} ({clean_word})"
+                word_pl = base_pl
+                if base_meanings and not possible_meanings:
+                    possible_meanings = base_meanings
             else:
                 word_pl = clean_word
         else:
@@ -596,8 +636,8 @@ def fetch_dynamic_translation(raw_word, clean_word, sentence, detected_phrase):
         "translation": word_pl,
         "pronunciation": f"/{phrase_text or clean_word}/",
         "context_example": sentence or raw_word,
-        "context_example_pl": sentence_pl or f"Wymiana zdań w kontekście",
-        "possible_meanings": possible_meanings,
+        "context_example_pl": sentence_pl or (f"Przetłumaczone zdanie: {word_pl}" if word_pl != clean_word else sentence or raw_word),
+        "possible_meanings": possible_meanings[:5],
         "source": "multi-engine-translator"
     }
 
