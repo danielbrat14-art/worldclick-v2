@@ -142,48 +142,73 @@ PARTICLES = [
 ]
 
 KNOWN_PHRASES = {
-    "roll out": {
-        "phrase": "roll out",
-        "phrase_type": "Phrasal Verb",
-        "translation": "rozwijać (np. czerwony dywan), wprowadzać (nowe rozwiązania/usługi)",
-        "possible_meanings": ["rozwijać (czerwony dywan)", "wprowadzać na rynek", "prezentować"]
-    },
-    "rolling out": {
-        "phrase": "rolling out",
-        "phrase_type": "Phrasal Verb",
-        "translation": "rozwijający, wprowadzający (np. czerwony dywan / nowy projekt)",
-        "possible_meanings": ["rozwijanie (dywanu)", "wprowadzanie na rynek"]
-    },
-    "stay out": {
-        "phrase": "stay out",
-        "phrase_type": "Phrasal Verb",
-        "translation": "trzymać się z dala, nie mieszać się",
-        "possible_meanings": ["trzymać się z dala", "nie ingerować", "zostawać na zewnątrz"]
-    },
-    "stay out of": {
-        "phrase": "stay out of",
-        "phrase_type": "Phrasal Verb",
-        "translation": "trzymać się z dala od, nie mieszać się w",
-        "possible_meanings": ["trzymać się z dala od", "nie mieszać się w (sprawy)"]
-    },
-    "tit for tat": {
-        "phrase": "tit for tat",
-        "phrase_type": "Idiom / Expression",
-        "translation": "wet za wet, odwetowy (np. cła odwetowe)",
-        "possible_meanings": ["wet za wet", "działanie odwetowe", "odpłacenie pięknym za nadobne"]
-    },
-    "tit-for-tat": {
-        "phrase": "tit-for-tat",
-        "phrase_type": "Idiom / Expression",
-        "translation": "wet za wet, odwetowy (np. cła odwetowe)",
-        "possible_meanings": ["odwetowy", "wet za wet"]
-    },
-    "when it comes to": {
-        "phrase": "when it comes to",
-        "phrase_type": "Idiom / Expression",
-        "translation": "jeśli chodzi o, w kwestii, odnośnie do",
-        "possible_meanings": ["jeśli chodzi o", "w kwestii", "odnośnie do"]
-    }
+    "roll out": {"phrase": "roll out", "phrase_type": "Phrasal Verb", "translation": "rozwijać, wprowadzać na rynek", "possible_meanings": ["rozwijać", "wprowadzać na rynek", "prezentować"]},
+    "rolling out": {"phrase": "rolling out", "phrase_type": "Phrasal Verb", "translation": "rozwijanie, wprowadzanie na rynek", "possible_meanings": ["rozwijanie", "wprowadzanie na rynek"]},
+    "rolled out": {"phrase": "rolled out", "phrase_type": "Phrasal Verb", "translation": "rozwinął, wprowadził na rynek", "possible_meanings": ["rozwinął", "wprowadził na rynek"]},
+    "rolls out": {"phrase": "rolls out", "phrase_type": "Phrasal Verb", "translation": "rozwija, wprowadza na rynek", "possible_meanings": ["rozwija", "wprowadza na rynek"]},
+    "scale up": {"phrase": "scale up", "phrase_type": "Phrasal Verb", "translation": "zwiększać skalę, rozbudowywać", "possible_meanings": ["zwiększać skalę", "rozbudowywać"]},
+    "scaling up": {"phrase": "scaling up", "phrase_type": "Phrasal Verb", "translation": "zwiększanie skali, rozbudowa", "possible_meanings": ["zwiększanie skali", "rozbudowywanie"]},
+    "scaled up": {"phrase": "scaled up", "phrase_type": "Phrasal Verb", "translation": "zwiększono skalę, rozbudowano", "possible_meanings": ["zwiększono skalę"]},
+    "scales up": {"phrase": "scales up", "phrase_type": "Phrasal Verb", "translation": "zwiększa skalę", "possible_meanings": ["zwiększa skalę"]},
+    "ramp up": {"phrase": "ramp up", "phrase_type": "Phrasal Verb", "translation": "gwałtownie zwiększać, przyspieszać", "possible_meanings": ["gwałtownie zwiększać", "intensyfikować"]},
+    "ramping up": {"phrase": "ramping up", "phrase_type": "Phrasal Verb", "translation": "gwałtowne zwiększanie, intensyfikacja", "possible_meanings": ["gwałtowne zwiększanie"]},
+    "ramped up": {"phrase": "ramped up", "phrase_type": "Phrasal Verb", "translation": "zwiększono gwałtownie", "possible_meanings": ["zwiększono gwałtownie"]},
+    "carry out": {"phrase": "carry out", "phrase_type": "Phrasal Verb", "translation": "przeprowadzać, realizować", "possible_meanings": ["przeprowadzać", "realizować", "wykonywać"]},
+    "carrying out": {"phrase": "carrying out", "phrase_type": "Phrasal Verb", "translation": "przeprowadzanie, realizacja", "possible_meanings": ["przeprowadzanie", "realizowanie"]},
+    "carried out": {"phrase": "carried out", "phrase_type": "Phrasal Verb", "translation": "przeprowadzono, zrealizowano", "possible_meanings": ["przeprowadzono", "zrealizowano"]},
+    "carries out": {"phrase": "carries out", "phrase_type": "Phrasal Verb", "translation": "przeprowadza, realizuje", "possible_meanings": ["przeprowadza", "realizuje"]},
+    "rule out": {"phrase": "rule out", "phrase_type": "Phrasal Verb", "translation": "wykluczać, odrzucać", "possible_meanings": ["wykluczać", "odrzucać"]},
+    "ruled out": {"phrase": "ruled out", "phrase_type": "Phrasal Verb", "translation": "wykluczono, odrzucono", "possible_meanings": ["wykluczono", "odrzucono"]},
+    "ruling out": {"phrase": "ruling out", "phrase_type": "Phrasal Verb", "translation": "wykluczanie, odrzucanie", "possible_meanings": ["wykluczanie", "odrzucanie"]},
+    "phase out": {"phrase": "phase out", "phrase_type": "Phrasal Verb", "translation": "wycofywać stopniowo", "possible_meanings": ["wycofywać stopniowo", "stopniowo wygaszać"]},
+    "phasing out": {"phrase": "phasing out", "phrase_type": "Phrasal Verb", "translation": "stopniowe wycofywanie", "possible_meanings": ["stopniowe wycofywanie"]},
+    "phased out": {"phrase": "phased out", "phrase_type": "Phrasal Verb", "translation": "wycofano stopniowo", "possible_meanings": ["wycofano stopniowo"]},
+    "crack down": {"phrase": "crack down", "phrase_type": "Phrasal Verb", "translation": "wprowadzać surowe środki, zwalczać", "possible_meanings": ["zwalczać", "wprowadzać rygor"]},
+    "crack down on": {"phrase": "crack down on", "phrase_type": "Phrasal Verb", "translation": "surowo zwalczać, ukrócić", "possible_meanings": ["surowo zwalczać", "ukrócić"]},
+    "cracking down on": {"phrase": "cracking down on", "phrase_type": "Phrasal Verb", "translation": "surowe zwalczanie", "possible_meanings": ["surowe zwalczanie"]},
+    "cracked down on": {"phrase": "cracked down on", "phrase_type": "Phrasal Verb", "translation": "surowo ukrócono", "possible_meanings": ["surowo ukrócono"]},
+    "wind down": {"phrase": "wind down", "phrase_type": "Phrasal Verb", "translation": "stopniowo kończyć, wygaszać", "possible_meanings": ["stopniowo kończyć", "wygaszać"]},
+    "winding down": {"phrase": "winding down", "phrase_type": "Phrasal Verb", "translation": "stopniowe wygaszanie", "possible_meanings": ["stopniowe wygaszanie"]},
+    "wound down": {"phrase": "wound down", "phrase_type": "Phrasal Verb", "translation": "wygaszono, zakończono", "possible_meanings": ["wygaszono"]},
+    "speed up": {"phrase": "speed up", "phrase_type": "Phrasal Verb", "translation": "przyspieszać", "possible_meanings": ["przyspieszać"]},
+    "speeding up": {"phrase": "speeding up", "phrase_type": "Phrasal Verb", "translation": "przyspieszanie", "possible_meanings": ["przyspieszanie"]},
+    "sped up": {"phrase": "sped up", "phrase_type": "Phrasal Verb", "translation": "przyspieszono", "possible_meanings": ["przyspieszono"]},
+    "set up": {"phrase": "set up", "phrase_type": "Phrasal Verb", "translation": "zakładać, organizować, tworzyć", "possible_meanings": ["zakładać", "organizować", "tworzyć"]},
+    "setting up": {"phrase": "setting up", "phrase_type": "Phrasal Verb", "translation": "zakładanie, tworzenie", "possible_meanings": ["zakładanie", "tworzenie"]},
+    "pick up": {"phrase": "pick up", "phrase_type": "Phrasal Verb", "translation": "odbierać, podnosić, ożywiać się", "possible_meanings": ["odbierać", "podnosić", "ożywiać się"]},
+    "picking up": {"phrase": "picking up", "phrase_type": "Phrasal Verb", "translation": "odbieranie, ożywianie się", "possible_meanings": ["odbieranie", "ożywianie się"]},
+    "picked up": {"phrase": "picked up", "phrase_type": "Phrasal Verb", "translation": "odebrano, ożywiło się", "possible_meanings": ["odebrano", "ożywiło się"]},
+    "find out": {"phrase": "find out", "phrase_type": "Phrasal Verb", "translation": "dowiadywać się, odkrywać", "possible_meanings": ["dowiadywać się", "odkrywać"]},
+    "finding out": {"phrase": "finding out", "phrase_type": "Phrasal Verb", "translation": "dowiadywanie się", "possible_meanings": ["dowiadywanie się"]},
+    "found out": {"phrase": "found out", "phrase_type": "Phrasal Verb", "translation": "dowiedziano się, odkryto", "possible_meanings": ["dowiedziano się", "odkryto"]},
+    "take off": {"phrase": "take off", "phrase_type": "Phrasal Verb", "translation": "startować, odnieść nagły sukces", "possible_meanings": ["startować (samolot)", "odnieść sukces"]},
+    "taking off": {"phrase": "taking off", "phrase_type": "Phrasal Verb", "translation": "startowanie, nabieranie tempa", "possible_meanings": ["startowanie", "nabieranie tempa"]},
+    "took off": {"phrase": "took off", "phrase_type": "Phrasal Verb", "translation": "wystartował, nabrał tempa", "possible_meanings": ["wystartował"]},
+    "work out": {"phrase": "work out", "phrase_type": "Phrasal Verb", "translation": "sprawdzić się, wypracować, ćwiczyć", "possible_meanings": ["wypracować", "sprawdzić się", "ćwiczyć"]},
+    "working out": {"phrase": "working out", "phrase_type": "Phrasal Verb", "translation": "wypracowywanie, ćwiczenie", "possible_meanings": ["wypracowywanie", "ćwiczenie"]},
+    "worked out": {"phrase": "worked out", "phrase_type": "Phrasal Verb", "translation": "wypracowano, sprawdziło się", "possible_meanings": ["wypracowano"]},
+    "bring up": {"phrase": "bring up", "phrase_type": "Phrasal Verb", "translation": "poruszać (temat), wychowywać", "possible_meanings": ["poruszać temat", "wychowywać"]},
+    "bringing up": {"phrase": "bringing up", "phrase_type": "Phrasal Verb", "translation": "poruszanie tematu", "possible_meanings": ["poruszanie tematu"]},
+    "brought up": {"phrase": "brought up", "phrase_type": "Phrasal Verb", "translation": "poruszono, wychowano", "possible_meanings": ["poruszono temat", "wychowano"]},
+    "turn out": {"phrase": "turn out", "phrase_type": "Phrasal Verb", "translation": "okazać się", "possible_meanings": ["okazać się", "wytwarzać"]},
+    "turning out": {"phrase": "turning out", "phrase_type": "Phrasal Verb", "translation": "okazywanie się", "possible_meanings": ["okazywanie się"]},
+    "turned out": {"phrase": "turned out", "phrase_type": "Phrasal Verb", "translation": "okazało się", "possible_meanings": ["okazało się"]},
+    "point out": {"phrase": "point out", "phrase_type": "Phrasal Verb", "translation": "wskazywać, zwracać uwagę", "possible_meanings": ["wskazywać", "zwracać uwagę"]},
+    "pointing out": {"phrase": "pointing out", "phrase_type": "Phrasal Verb", "translation": "wskazywanie", "possible_meanings": ["wskazywanie"]},
+    "pointed out": {"phrase": "pointed out", "phrase_type": "Phrasal Verb", "translation": "wskazał, zwrócił uwagę", "possible_meanings": ["wskazał", "zwrócił uwagę"]},
+    "stay out": {"phrase": "stay out", "phrase_type": "Phrasal Verb", "translation": "trzymać się z dala", "possible_meanings": ["trzymać się z dala"]},
+    "staying out": {"phrase": "staying out", "phrase_type": "Phrasal Verb", "translation": "trzymanie się z dala", "possible_meanings": ["trzymanie się z dala"]},
+    "stay out of": {"phrase": "stay out of", "phrase_type": "Phrasal Verb", "translation": "trzymać się z dala od", "possible_meanings": ["trzymać się z dala od"]},
+    "staying out of": {"phrase": "staying out of", "phrase_type": "Phrasal Verb", "translation": "trzymanie się z dala od", "possible_meanings": ["trzymanie się z dala od"]},
+    "step down": {"phrase": "step down", "phrase_type": "Phrasal Verb", "translation": "ustępować ze stanowiska, rezygnować", "possible_meanings": ["ustępować ze stanowiska", "rezygnować"]},
+    "stepping down": {"phrase": "stepping down", "phrase_type": "Phrasal Verb", "translation": "ustępowanie ze stanowiska", "possible_meanings": ["ustępowanie ze stanowiska"]},
+    "stepped down": {"phrase": "stepped down", "phrase_type": "Phrasal Verb", "translation": "ustąpił ze stanowiska", "possible_meanings": ["ustąpił ze stanowiska"]},
+    "step up": {"phrase": "step up", "phrase_type": "Phrasal Verb", "translation": "zwiększać wysiłki, przyspieszać", "possible_meanings": ["zwiększać wysiłki", "przyspieszać"]},
+    "stepping up": {"phrase": "stepping up", "phrase_type": "Phrasal Verb", "translation": "zwiększanie wysiłków", "possible_meanings": ["zwiększanie wysiłków"]},
+    "stepped up": {"phrase": "stepped up", "phrase_type": "Phrasal Verb", "translation": "zwiększono wysiłki", "possible_meanings": ["zwiększono wysiłki"]},
+    "tit for tat": {"phrase": "tit for tat", "phrase_type": "Idiom / Expression", "translation": "wet za wet, odwetowy", "possible_meanings": ["wet za wet", "działanie odwetowe"]},
+    "tit-for-tat": {"phrase": "tit-for-tat", "phrase_type": "Idiom / Expression", "translation": "wet za wet, odwetowy", "possible_meanings": ["odwetowy", "wet za wet"]},
+    "when it comes to": {"phrase": "when it comes to", "phrase_type": "Idiom / Expression", "translation": "jeśli chodzi o, w kwestii", "possible_meanings": ["jeśli chodzi o", "w kwestii"]}
 }
 
 FALLBACK_DICTIONARY = {
@@ -417,50 +442,55 @@ def translate_word():
 
 
 COMMON_PHRASAL_VERB_ROOTS = {
-    'act', 'add', 'back', 'blow', 'break', 'bring', 'build', 'call', 'carry', 'check',
-    'clean', 'clear', 'come', 'count', 'cut', 'do', 'draw', 'drop', 'end', 'fall',
-    'fill', 'find', 'get', 'give', 'go', 'grow', 'hand', 'hang', 'hold', 'keep',
-    'kick', 'knock', 'lay', 'lead', 'let', 'look', 'make', 'pass', 'pay', 'pick',
-    'point', 'pull', 'put', 'run', 'set', 'show', 'shut', 'stand', 'start', 'step',
-    'take', 'talk', 'think', 'throw', 'turn', 'use', 'walk', 'work', 'write'
+    'act', 'add', 'back', 'blow', 'blew', 'blown', 'break', 'broke', 'broken', 'bring', 'brought',
+    'build', 'built', 'call', 'carry', 'check', 'clean', 'clear', 'come', 'came', 'count', 'cut',
+    'do', 'did', 'done', 'draw', 'drew', 'drawn', 'drop', 'end', 'fall', 'fell', 'fallen', 'fill',
+    'find', 'found', 'get', 'got', 'gotten', 'give', 'gave', 'given', 'go', 'went', 'gone', 'grow',
+    'grew', 'grown', 'hand', 'hang', 'hung', 'hold', 'held', 'keep', 'kept', 'kick', 'knock', 'lay',
+    'laid', 'lead', 'led', 'let', 'look', 'make', 'made', 'pass', 'pay', 'paid', 'pick', 'point',
+    'pull', 'put', 'run', 'ran', 'scale', 'ramp', 'phase', 'rule', 'wind', 'wound', 'crack', 'set',
+    'show', 'showed', 'shown', 'shut', 'stand', 'stood', 'start', 'step', 'take', 'took', 'taken',
+    'talk', 'think', 'thought', 'throw', 'threw', 'thrown', 'turn', 'use', 'walk', 'work', 'write', 'wrote', 'written'
 }
 
-def get_base_verb(word):
+def is_phrasal_root(word):
     word = word.lower().strip()
     if word in COMMON_PHRASAL_VERB_ROOTS:
-        return word
+        return True
     if word.endswith('ied'):
         stem = word[:-3] + 'y'
         if stem in COMMON_PHRASAL_VERB_ROOTS:
-            return stem
-    for suffix in ['ing', 'ed', 'es', 's']:
-        if word.endswith(suffix):
-            stem = word[:-len(suffix)]
-            if stem in COMMON_PHRASAL_VERB_ROOTS:
-                return stem
-            if (stem + 'e') in COMMON_PHRASAL_VERB_ROOTS:
-                return stem + 'e'
-    return None
+            return True
+    for s in ['ing', 'ed', 'es', 's']:
+        if word.endswith(s):
+            stem = word[:-len(s)]
+            if stem in COMMON_PHRASAL_VERB_ROOTS or (stem + 'e') in COMMON_PHRASAL_VERB_ROOTS:
+                return True
+            if len(stem) > 2 and stem[-1] == stem[-2]:
+                single_stem = stem[:-1]
+                if single_stem in COMMON_PHRASAL_VERB_ROOTS:
+                    return True
+    return False
 
 
 def detect_phrasal_verb(clean_word, raw_word, sentence):
     if not sentence:
         return None
 
+    # 1. High precision match against KNOWN_PHRASES dictionary
     for phrase_key, phrase_info in KNOWN_PHRASES.items():
         pattern = r'\b' + re.escape(phrase_key) + r'\b'
         if re.search(pattern, sentence, re.IGNORECASE):
             if clean_word in phrase_key.lower().split():
                 return {
                     "phrase": phrase_key,
-                    "phrase_type": phrase_info.get("phrase_type", "Phrasal Verb / Phrase"),
+                    "phrase_type": phrase_info.get("phrase_type", "Phrasal Verb"),
                     "translation": phrase_info.get("translation"),
                     "possible_meanings": phrase_info.get("possible_meanings", [])
                 }
 
-    # Only check particle combinations if clean_word is an actual English verb root!
-    base_v = get_base_verb(clean_word)
-    if base_v:
+    # 2. Dynamic detection for verb + particle combinations
+    if is_phrasal_root(clean_word):
         for particle in PARTICLES:
             pattern = r'\b(' + re.escape(clean_word) + r'\s+' + re.escape(particle) + r')\b'
             match = re.search(pattern, sentence, re.IGNORECASE)
