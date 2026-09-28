@@ -1,6 +1,6 @@
 /**
  * Text Tokenizer & Interactive Reader Renderer for WordClick v2
- * Includes Smart Article Truncation & Expand/Collapse Accordion ("Rozwiń więcej")
+ * Renders the FULL opened article continuously for interactive reading.
  */
 
 export function renderInteractiveText(rawText, containerElement, onWordClickCallback) {
@@ -9,66 +9,11 @@ export function renderInteractiveText(rawText, containerElement, onWordClickCall
   if (!rawText || !rawText.trim()) return;
 
   const paragraphs = rawText.split(/\n+/).filter(p => p.trim().length > 0);
-  const INITIAL_PARAGRAPHS = 3;
 
-  const visibleParagraphs = paragraphs.slice(0, INITIAL_PARAGRAPHS);
-  const hiddenParagraphs = paragraphs.slice(INITIAL_PARAGRAPHS);
-
-  // Render initial visible paragraphs
-  visibleParagraphs.forEach((paragraphText) => {
+  paragraphs.forEach((paragraphText) => {
     const pEl = createParagraphElement(paragraphText, rawText, onWordClickCallback);
     containerElement.appendChild(pEl);
   });
-
-  // If article has more paragraphs, render accordion "Rozwiń więcej"
-  if (hiddenParagraphs.length > 0) {
-    // Fade overlay line
-    const fadeOverlay = document.createElement('div');
-    fadeOverlay.className = 'article-fade-overlay';
-    fadeOverlay.id = 'article-fade-overlay';
-    containerElement.appendChild(fadeOverlay);
-
-    // Collapsible container for remaining paragraphs
-    const expandedContainer = document.createElement('div');
-    expandedContainer.className = 'article-expanded-body hidden';
-    expandedContainer.id = 'article-expanded-body';
-
-    hiddenParagraphs.forEach((paragraphText) => {
-      const pEl = createParagraphElement(paragraphText, rawText, onWordClickCallback);
-      expandedContainer.appendChild(pEl);
-    });
-
-    containerElement.appendChild(expandedContainer);
-
-    // Expand / Collapse Button
-    const btnContainer = document.createElement('div');
-    btnContainer.className = 'expand-btn-container';
-
-    const expandBtn = document.createElement('button');
-    expandBtn.type = 'button';
-    expandBtn.className = 'btn-expand-article';
-    expandBtn.id = 'btn-toggle-expand-article';
-    expandBtn.innerHTML = `📖 Czytaj dalej (Rozwiń pełny artykuł — ${hiddenParagraphs.length} pozostałych akapitów) 👇`;
-
-    expandBtn.addEventListener('click', () => {
-      const isCurrentlyHidden = expandedContainer.classList.contains('hidden');
-      if (isCurrentlyHidden) {
-        expandedContainer.classList.remove('hidden');
-        fadeOverlay.classList.add('hidden');
-        expandBtn.innerHTML = `🔼 Zwiń artykuł`;
-        expandBtn.classList.add('expanded');
-      } else {
-        expandedContainer.classList.add('hidden');
-        fadeOverlay.classList.remove('hidden');
-        expandBtn.innerHTML = `📖 Czytaj dalej (Rozwiń pełny artykuł — ${hiddenParagraphs.length} pozostałych akapitów) 👇`;
-        expandBtn.classList.remove('expanded');
-        containerElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    });
-
-    btnContainer.appendChild(expandBtn);
-    containerElement.appendChild(btnContainer);
-  }
 }
 
 function createParagraphElement(paragraphText, rawText, onWordClickCallback) {

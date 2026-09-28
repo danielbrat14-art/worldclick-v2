@@ -226,27 +226,75 @@ async function initNewsFeed() {
       return;
     }
 
-    filtered.forEach(article => {
-      const card = document.createElement('div');
-      card.className = 'library-card';
-      card.innerHTML = `
-        <div>
-          <div class="news-card-header">
-            <span class="news-source-badge" style="background-color:${article.badge_color}">${escapeHtml(article.source)}</span>
-            <span class="preset-tag">${escapeHtml(article.category)}</span>
-          </div>
-          <h4 class="preset-title">${escapeHtml(article.title)}</h4>
-          <p class="preset-excerpt">${escapeHtml(article.description || article.title)}</p>
-        </div>
-        <div class="news-time">🌐 Click to read full article</div>
-      `;
+    const INITIAL_SHOW = 6;
+    const initialArticles = filtered.slice(0, INITIAL_SHOW);
+    const hiddenArticles = filtered.slice(INITIAL_SHOW);
 
-      card.addEventListener('click', () => {
-        loadNewsArticleIntoReader(article);
+    // Render initial articles (first 6)
+    initialArticles.forEach(article => {
+      gridEl.appendChild(createNewsCard(article));
+    });
+
+    // If there are more articles, render expanded container & toggle button
+    if (hiddenArticles.length > 0) {
+      const expandedContainer = document.createElement('div');
+      expandedContainer.className = 'news-grid-expanded hidden';
+      expandedContainer.id = 'news-grid-expanded';
+
+      hiddenArticles.forEach(article => {
+        expandedContainer.appendChild(createNewsCard(article));
       });
 
-      gridEl.appendChild(card);
+      gridEl.appendChild(expandedContainer);
+
+      const expandBtnWrapper = document.createElement('div');
+      expandBtnWrapper.className = 'expand-news-wrapper';
+      expandBtnWrapper.style.cssText = 'grid-column: 1/-1; display: flex; justify-content: center; margin-top: 1rem; margin-bottom: 0.5rem;';
+
+      const expandBtn = document.createElement('button');
+      expandBtn.type = 'button';
+      expandBtn.className = 'btn-expand-article';
+      expandBtn.innerHTML = `📰 Pokaż więcej artykułów (+${hiddenArticles.length} pozostałych wiadomości) 👇`;
+
+      expandBtn.addEventListener('click', () => {
+        const isHidden = expandedContainer.classList.contains('hidden');
+        if (isHidden) {
+          expandedContainer.classList.remove('hidden');
+          expandBtn.innerHTML = `🔼 Zwiń listę artykułów`;
+          expandBtn.classList.add('expanded');
+        } else {
+          expandedContainer.classList.add('hidden');
+          expandBtn.innerHTML = `📰 Pokaż więcej artykułów (+${hiddenArticles.length} pozostałych wiadomości) 👇`;
+          expandBtn.classList.remove('expanded');
+          gridEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+
+      expandBtnWrapper.appendChild(expandBtn);
+      gridEl.appendChild(expandBtnWrapper);
+    }
+  }
+
+  function createNewsCard(article) {
+    const card = document.createElement('div');
+    card.className = 'library-card';
+    card.innerHTML = `
+      <div>
+        <div class="news-card-header">
+          <span class="news-source-badge" style="background-color:${article.badge_color}">${escapeHtml(article.source)}</span>
+          <span class="preset-tag">${escapeHtml(article.category)}</span>
+        </div>
+        <h4 class="preset-title">${escapeHtml(article.title)}</h4>
+        <p class="preset-excerpt">${escapeHtml(article.description || article.title)}</p>
+      </div>
+      <div class="news-time">🌐 Click to read full article</div>
+    `;
+
+    card.addEventListener('click', () => {
+      loadNewsArticleIntoReader(article);
     });
+
+    return card;
   }
 
   refreshBtn.addEventListener('click', () => {

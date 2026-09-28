@@ -1131,6 +1131,14 @@ body {
   box-shadow: none;
 }
 
+.news-grid-expanded {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+  width: 100%;
+}
+
 /* Voice Selector Control */
 .voice-control {
   display: flex;
