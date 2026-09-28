@@ -1,6 +1,8 @@
 /**
- * Sentence-by-Sentence Karaoke TTS Engine for Chromium & Firefox
+ * Sentence-by-Sentence Karaoke TTS Engine for Chromium, Edge & Firefox
  */
+
+import { getBestVoice, populateVoiceSelector } from './speech.js';
 
 let currentSentenceIndex = 0;
 let sentenceList = [];
@@ -13,6 +15,7 @@ export function initKaraokePlayer() {
   const pauseBtn = document.getElementById('karaoke-pause-btn');
   const stopBtn = document.getElementById('karaoke-stop-btn');
   const speedSelect = document.getElementById('karaoke-speed-select');
+  const voiceSelect = document.getElementById('karaoke-voice-select');
 
   if (!playBtn) return;
 
@@ -20,19 +23,34 @@ export function initKaraokePlayer() {
   pauseBtn.addEventListener('click', pauseKaraokeReading);
   stopBtn.addEventListener('click', stopKaraokeReading);
 
-  speedSelect.addEventListener('change', (e) => {
-    currentSpeed = parseFloat(e.target.value);
-    if (isPlaying) {
-      stopKaraokeReading();
-      startKaraokeReading();
-    }
-  });
+  if (speedSelect) {
+    speedSelect.addEventListener('change', (e) => {
+      currentSpeed = parseFloat(e.target.value);
+      if (isPlaying) {
+        stopKaraokeReading();
+        startKaraokeReading();
+      }
+    });
+  }
+
+  if (voiceSelect) {
+    populateVoiceSelector(voiceSelect);
+    voiceSelect.addEventListener('change', () => {
+      if (isPlaying) {
+        stopKaraokeReading();
+        startKaraokeReading();
+      }
+    });
+  }
 
   // Ensure voices are loaded
   if ('speechSynthesis' in window) {
     window.speechSynthesis.getVoices();
     if (window.speechSynthesis.onvoiceschanged !== undefined) {
-      window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+      window.speechSynthesis.onvoiceschanged = () => {
+        window.speechSynthesis.getVoices();
+        if (voiceSelect) populateVoiceSelector(voiceSelect);
+      };
     }
   }
 }
@@ -51,8 +69,8 @@ export function startKaraokeReading() {
     window.speechSynthesis.resume();
     isPaused = false;
     isPlaying = true;
-    playBtn.classList.add('hidden');
-    pauseBtn.classList.remove('hidden');
+    if (playBtn) playBtn.classList.add('hidden');
+    if (pauseBtn) pauseBtn.classList.remove('hidden');
     return;
   }
 
@@ -72,9 +90,9 @@ export function startKaraokeReading() {
   isPlaying = true;
   isPaused = false;
 
-  playBtn.classList.add('hidden');
-  pauseBtn.classList.remove('hidden');
-  stopBtn.classList.remove('hidden');
+  if (playBtn) playBtn.classList.add('hidden');
+  if (pauseBtn) pauseBtn.classList.remove('hidden');
+  if (stopBtn) stopBtn.classList.remove('hidden');
 
   speakNextSentence();
 }
@@ -97,9 +115,13 @@ function speakNextSentence() {
   utterance.lang = 'en-US';
   utterance.rate = currentSpeed;
 
-  const voices = window.speechSynthesis.getVoices();
-  const enVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('David') || v.name.includes('Zira'))) || voices.find(v => v.lang.startsWith('en'));
-  if (enVoice) utterance.voice = enVoice;
+  const voiceSelect = document.getElementById('karaoke-voice-select');
+  const selectedVoiceName = voiceSelect ? voiceSelect.value : null;
+  const voice = getBestVoice(selectedVoiceName);
+  
+  if (voice) {
+    utterance.voice = voice;
+  }
 
   utterance.onend = () => {
     currentSentenceIndex++;
@@ -127,8 +149,8 @@ export function pauseKaraokeReading() {
     window.speechSynthesis.pause();
     isPaused = true;
     isPlaying = false;
-    playBtn.classList.remove('hidden');
-    pauseBtn.classList.add('hidden');
+    if (playBtn) playBtn.classList.remove('hidden');
+    if (pauseBtn) pauseBtn.classList.add('hidden');
   }
 }
 
@@ -165,7 +187,6 @@ function buildSentenceTokenMap(tokenEls) {
     currentTokens.push(el);
     currentText += el.textContent + ' ';
 
-    // Check sentence boundary punctuation on next sibling or text
     const sentenceAttr = el.dataset.sentence || '';
     const isEnd = index === tokenEls.length - 1 || 
                   (sentenceAttr && index < tokenEls.length - 1 && tokenEls[index + 1].dataset.sentence !== sentenceAttr);

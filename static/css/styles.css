@@ -1079,6 +1079,75 @@ body {
   border-color: var(--accent-primary);
 }
 
+/* Article Expand / Collapse Accordion ("Rozwiń więcej") */
+.article-fade-overlay {
+  height: 60px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.95) 100%);
+  margin-top: -50px;
+  margin-bottom: 0.5rem;
+  pointer-events: none;
+  position: relative;
+  z-index: 2;
+}
+
+.article-expanded-body {
+  transition: all 0.3s ease-in-out;
+}
+
+.expand-btn-container {
+  display: flex;
+  justify-content: center;
+  margin: 1.25rem 0 0.5rem 0;
+}
+
+.btn-expand-article {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 30px;
+  border: 1.5px solid var(--accent-primary);
+  background: #ffffff;
+  color: var(--accent-hover);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.15);
+  transition: all 0.2s ease;
+}
+
+.btn-expand-article:hover {
+  background: var(--accent-primary);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(99, 102, 241, 0.3);
+}
+
+.btn-expand-article.expanded {
+  background: var(--bg-main);
+  color: var(--text-secondary);
+  border-color: var(--border-color);
+  box-shadow: none;
+}
+
+/* Voice Selector Control */
+.voice-control {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.voice-select {
+  max-width: 190px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
 .interactive-paragraph {
   margin-bottom: 1.25rem;
 }
