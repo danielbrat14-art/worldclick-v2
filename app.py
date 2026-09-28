@@ -187,6 +187,24 @@ KNOWN_PHRASES = {
 }
 
 FALLBACK_DICTIONARY = {
+    "means": {
+        "word": "means",
+        "translation": "oznacza, środki, sposób",
+        "pronunciation": "/miːnz/",
+        "possible_meanings": ["oznacza", "środki", "sposób", "możliwości", "droga"]
+    },
+    "district": {
+        "word": "district",
+        "translation": "dzielnica, dystrykt, okręg",
+        "pronunciation": "/ˈdɪstrɪkt/",
+        "possible_meanings": ["dzielnica", "dystrykt", "okręg", "rejon"]
+    },
+    "buzzing": {
+        "word": "buzzing",
+        "translation": "brzęczenie, buczenie",
+        "pronunciation": "/ˈbʌzɪŋ/",
+        "possible_meanings": ["brzęczenie", "buczenie", "bzykanie"]
+    },
     "believes": {
         "word": "believes",
         "translation": "uważa, wierzy",
@@ -198,6 +216,30 @@ FALLBACK_DICTIONARY = {
         "translation": "wywierać wpływ, chwiać, przekonywać",
         "pronunciation": "/sweɪ/",
         "possible_meanings": ["wywierać wpływ", "przekonywać", "kołysać"]
+    },
+    "yields": {
+        "word": "yields",
+        "translation": "rentowności, zyski, plony",
+        "pronunciation": "/jiːldz/",
+        "possible_meanings": ["rentowności (obligacji)", "zyski", "plony", "dawać wynik"]
+    },
+    "spike": {
+        "word": "spike",
+        "translation": "gwałtowny wzrost, skok",
+        "pronunciation": "/spaɪk/",
+        "possible_meanings": ["gwałtowny wzrost", "skok cen/rentowności", "szpic"]
+    },
+    "debt": {
+        "word": "debt",
+        "translation": "dług, zadłużenie",
+        "pronunciation": "/det/",
+        "possible_meanings": ["dług", "zadłużenie", "zobowiązanie"]
+    },
+    "risk": {
+        "word": "risk",
+        "translation": "ryzyko, zagrożenie",
+        "pronunciation": "/rɪsk/",
+        "possible_meanings": ["ryzyko", "zagrożenie", "ryzykować"]
     }
 }
 
