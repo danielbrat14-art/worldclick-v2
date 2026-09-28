@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WordClick v2 — Read, Listen & Master English</title>
+  <meta name="description" content="Interactive English reading assistant with Live News Feed, Karaoke Audio Reader, Grammar Insights, SRS Flashcards, Phrasal Verb detection, and Polish translations.">
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand">
+        <div class="brand-logo">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            <circle cx="12" cy="10" r="2" fill="currentColor"></circle>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <div style="display:flex; align-items:center; gap: 8px;">
+            <h1 class="brand-title">WordClick</h1>
+            <span class="v2-tag">v2 Ultimate</span>
+          </div>
+          <p class="brand-tagline">Read. Listen. Master.</p>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="app-nav">
+        <button id="nav-reader-btn" class="nav-tab active" data-target="reader-view">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+          </svg>
+          Reader & Importer
+        </button>
+        <button id="nav-study-btn" class="nav-tab" data-target="study-view">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+          </svg>
+          Study & Review
+        </button>
+        <button id="nav-vocab-btn" class="nav-tab" data-target="vocab-view">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+          </svg>
+          My Vocabulary
+          <span id="vocab-count-badge" class="badge">0</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content Wrapper -->
+  <main class="app-main">
+    
+    <!-- VIEW 1: READER & IMPORTER -->
+    <section id="reader-view" class="view-panel active">
+      
+      <!-- Mode Selection Tabs -->
+      <div class="import-mode-selector">
+        <button class="mode-btn active" data-mode="news">
+          📰 Live News Feed (BBC & Tech)
+        </button>
+        <button class="mode-btn" data-mode="url">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          Import from URL
+        </button>
+        <button class="mode-btn" data-mode="paste">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+          </svg>
+          Paste Text
+        </button>
+        <button class="mode-btn" data-mode="library">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
+          Featured Library
+        </button>
+      </div>
+
+      <!-- MODE 0: LIVE NEWS FEED -->
+      <div id="mode-news" class="card mode-panel active">
+        <div class="news-header-bar">
+          <div>
+            <h3 class="library-title">Live Auto-Updating News Feed</h3>
+            <p class="library-subtitle">Real-time breaking headlines from 11 verified global sources across 5 categories</p>
+          </div>
+          <button id="refresh-news-btn" class="btn-ghost" type="button">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+            Refresh Feed
+          </button>
+        </div>
+
+        <!-- Category Filters -->
+        <div class="news-category-filters" id="news-category-filters">
+          <button class="cat-pill active" data-cat="all">Wszystkie</button>
+          <button class="cat-pill" data-cat="Świat">🌐 Świat (BBC, Guardian, NPR)</button>
+          <button class="cat-pill" data-cat="Biznes">💼 Biznes (CNBC, Entrepreneur)</button>
+          <button class="cat-pill" data-cat="Finanse">📊 Finanse (CNBC Markets, Yahoo Finance)</button>
+          <button class="cat-pill" data-cat="Technologia">🚀 Technologia (TechCrunch, Ars Technica, Wired)</button>
+          <button class="cat-pill" data-cat="Project Management">📋 Project Management (Mountain Goat, InfoQ, PM Majik)</button>
+        </div>
+
+        <div id="news-loading" class="import-loading hidden">
+          <div class="spinner"></div>
+          <span>Aggregating real-time breaking news from 12 open sources...</span>
+        </div>
+
+        <div id="news-feed-grid" class="library-grid"></div>
+      </div>
+
+      <!-- MODE 1: URL IMPORTER -->
+      <div id="mode-url" class="card mode-panel hidden">
+        <div class="card-header">
+          <label for="url-input" class="input-label">Paste English article URL:</label>
+        </div>
+        <div class="url-input-group">
+          <div class="url-field-wrapper">
+            <svg class="url-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+            <input type="url" id="url-input" class="url-input" placeholder="https://en.wikipedia.org/wiki/Artificial_intelligence">
+          </div>
+          <button id="import-url-btn" class="btn-primary" type="button">
+            Fetch & Analyze Article
+          </button>
+        </div>
+
+        <div id="url-loading" class="import-loading hidden">
+          <div class="spinner"></div>
+          <span>Fetching and parsing article content from URL...</span>
+        </div>
+      </div>
+
+      <!-- MODE 2: PASTE TEXT -->
+      <div id="mode-paste" class="card mode-panel hidden">
+        <div class="card-header">
+          <label for="text-input" class="input-label">Paste your English text below:</label>
+          <button id="load-example-btn" class="btn-ghost" type="button">Load example</button>
+        </div>
+        <textarea id="text-input" class="text-input" placeholder="Paste your English text here..." rows="5"></textarea>
+        <div class="card-footer">
+          <div class="word-counter" id="input-word-counter">0 words</div>
+          <button id="analyze-btn" class="btn-primary" type="button">Analyze text</button>
+        </div>
+      </div>
+
+      <!-- MODE 3: FEATURED LIBRARY PRESETS -->
+      <div id="mode-library" class="card mode-panel hidden">
+        <h3 class="library-title">Select a Featured English Article:</h3>
+        <p class="library-subtitle">Choose from curated news and topics for immediate interactive reading</p>
+
+        <div class="library-grid">
+          <div class="library-card" data-preset="ai-tech">
+            <span class="preset-tag">Technology & AI</span>
+            <h4 class="preset-title">The Rise of Generative AI in Business</h4>
+            <p class="preset-excerpt">Artificial intelligence is transforming industries worldwide as companies roll out automated workflows...</p>
+            <span class="preset-words">~220 words</span>
+          </div>
+
+          <div class="library-card" data-preset="geopolitics">
+            <span class="preset-tag">Global News</span>
+            <h4 class="preset-title">Diplomacy and Global Trade Truces</h4>
+            <p class="preset-excerpt">China believes the United States is trying to contain its rise as a superpower, and it wants Washington to stay out of its way...</p>
+            <span class="preset-words">~160 words</span>
+          </div>
+
+          <div class="library-card" data-preset="space">
+            <span class="preset-tag">Science & Space</span>
+            <h4 class="preset-title">Exploring Mars and the Outer Solar System</h4>
+            <p class="preset-excerpt">Space agencies are launching ambitious robotic missions to investigate planetary atmospheres and search for signs of life...</p>
+            <span class="preset-words">~190 words</span>
+          </div>
+
+          <div class="library-card" data-preset="environment">
+            <span class="preset-tag">Environment</span>
+            <h4 class="preset-title">Clean Energy Transition and Climate Action</h4>
+            <p class="preset-excerpt">Governments and tech innovators are accelerating renewable energy implementation to reduce carbon emissions and build sustainable infrastructure...</p>
+            <span class="preset-words">~200 words</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Article Display Card -->
+      <div id="interactive-container" class="card reader-card hidden">
+        
+        <!-- Interactive Karaoke Audio Player Control Bar -->
+        <div class="karaoke-bar">
+          <div class="karaoke-controls">
+            <button id="karaoke-play-btn" class="btn-karaoke-play" title="Play Article Karaoke">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              Play Article
+            </button>
+            <button id="karaoke-pause-btn" class="btn-karaoke-pause hidden" title="Pause">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+              Pause
+            </button>
+            <button id="karaoke-stop-btn" class="btn-karaoke-stop hidden" title="Stop">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12"></rect></svg>
+              Stop
+            </button>
+
+            <div class="speed-control">
+              <label for="karaoke-speed-select">Speed:</label>
+              <select id="karaoke-speed-select" class="speed-select">
+                <option value="0.75">0.75x (Learner)</option>
+                <option value="1.0" selected>1.0x (Normal)</option>
+                <option value="1.25">1.25x (Fast)</option>
+              </select>
+            </div>
+
+            <div class="font-size-control">
+              <span class="font-label">Text Size:</span>
+              <button id="font-dec-btn" class="btn-font-toggle" title="Mniejszy tekst (A-)">A-</button>
+              <button id="font-reset-btn" class="btn-font-toggle active" title="Domyślny tekst (100%)">A</button>
+              <button id="font-inc-btn" class="btn-font-toggle" title="Większy tekst (A+)">A+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="reader-header">
+          <div>
+            <h2 id="article-display-title" class="article-display-title hidden">Article Title</h2>
+            <div class="reader-meta">
+              <span class="pulse-indicator"></span>
+              <span id="article-meta-info">Interactive Reader — Click any word or phrasal verb for instant Polish translation</span>
+            </div>
+          </div>
+          <button id="clear-reader-btn" class="btn-subtle" title="Clear and edit input">
+            Edit / Change
+          </button>
+        </div>
+
+        <article id="interactive-text-body" class="interactive-article"></article>
+      </div>
+
+    </section>
+
+    <!-- VIEW 2: STUDY & REVIEW (SRS FISZKI & QUIZ) -->
+    <section id="study-view" class="view-panel">
+      <div class="vocab-header">
+        <div>
+          <h2 class="vocab-title">Study & Review</h2>
+          <p class="vocab-subtitle">Master saved words with SRS Flashcards and Context Quizzes</p>
+        </div>
+        
+        <div class="study-sub-nav">
+          <button id="study-tab-flashcards" class="study-sub-tab active" data-sub="flashcards">🎴 3D Flashcards</button>
+          <button id="study-tab-quiz" class="study-sub-tab" data-sub="quiz">📝 Context Quiz</button>
+        </div>
+      </div>
+
+      <!-- SUB-PANEL 1: 3D FLASHCARDS -->
+      <div id="sub-flashcards" class="study-panel active">
+        <div id="flashcard-container" class="flashcard-wrapper">
+          
+          <!-- Flashcard Prev / Next Control Bar -->
+          <div class="fc-navigation-bar">
+            <button id="fc-prev-btn" class="btn-fc-nav" title="Poprzednia karta (←)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+              Poprzednia
+            </button>
+            <div id="fc-counter" class="fc-counter">Card 1 of 5</div>
+            <button id="fc-next-btn" class="btn-fc-nav" title="Następna karta (→)">
+              Następna
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+          </div>
+
+          <div id="flashcard-3d" class="flashcard-card">
+            <div class="fc-inner">
+              <div class="fc-front">
+                <span class="fc-label">ENGLISH WORD</span>
+                <h3 id="fc-front-word" class="fc-word">upcoming</h3>
+                <p id="fc-front-example" class="fc-example">"about the upcoming project"</p>
+                <span class="fc-hint">Click card to flip 🔄</span>
+              </div>
+
+              <div class="fc-back">
+                <div class="fc-back-header">
+                  <span class="fc-label">POLISH TRANSLATION</span>
+                  <button id="fc-audio-btn" class="btn-subtle fc-audio-btn">🔊 Listen</button>
+                </div>
+                <h3 id="fc-back-word" class="fc-word-back">upcoming</h3>
+                <div id="fc-back-translation" class="fc-translation">nadchodzący, zbliżający się</div>
+                <p id="fc-back-example-pl" class="fc-example-pl">→ nadchodzący projekt</p>
+
+                <div class="srs-actions">
+                  <button class="btn-srs hard" data-grade="2">🔴 Hard (1 day)</button>
+                  <button class="btn-srs good" data-grade="4">🟡 Good (3 days)</button>
+                  <button class="btn-srs easy" data-grade="5">🟢 Easy (7 days)</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="flashcard-empty" class="empty-state hidden">
+          <div class="empty-icon">🎴</div>
+          <h3>No vocabulary items saved yet</h3>
+          <p>Read an article, click any unknown word, and select <strong>"+ Add to vocabulary"</strong> to start flashcard reviews.</p>
+        </div>
+      </div>
+
+      <!-- SUB-PANEL 2: CONTEXT QUIZ -->
+      <div id="sub-quiz" class="study-panel">
+        <div id="quiz-container" class="quiz-card card">
+          <div class="quiz-header">
+            <span id="quiz-counter" class="quiz-counter">Question 1 of 5</span>
+            <span id="quiz-score" class="quiz-score">Score: 0</span>
+          </div>
+
+          <div id="quiz-question-sentence" class="quiz-sentence">
+            "China ________ the United States is trying to contain its rise"
+          </div>
+
+          <div id="quiz-options-grid" class="quiz-options"></div>
+
+          <div id="quiz-feedback" class="quiz-feedback hidden"></div>
+        </div>
+
+        <div id="quiz-empty" class="empty-state hidden">
+          <div class="empty-icon">📝</div>
+          <h3>Need at least 2 saved words for Quiz</h3>
+          <p>Save at least 2 words while reading to unlock context fill-in-the-blank quizzes.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 3: MY VOCABULARY -->
+    <section id="vocab-view" class="view-panel">
+      <div class="vocab-header">
+        <div>
+          <h2 class="vocab-title">My Vocabulary</h2>
+          <p class="vocab-subtitle">Saved words & phrasal verbs from your reading sessions</p>
+        </div>
+        <div class="vocab-actions">
+          <input type="text" id="vocab-search" class="search-input" placeholder="Search saved words...">
+          <button id="clear-vocab-btn" class="btn-danger-ghost">Clear All</button>
+        </div>
+      </div>
+
+      <div id="vocab-grid" class="vocab-grid"></div>
+      
+      <div id="vocab-empty" class="empty-state">
+        <div class="empty-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+          </svg>
+        </div>
+        <h3>Your vocabulary is empty</h3>
+        <p>Click any word while reading an article and select <strong>"+ Add to vocabulary"</strong> to build your list.</p>
+        <button id="empty-go-reader" class="btn-primary">Start Reading</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- WORD POPOVER & MOBILE BOTTOM SHEET -->
+  <div id="word-popover" class="word-popover hidden" role="dialog" aria-modal="true">
+    <div class="popover-backdrop" id="popover-backdrop"></div>
+    <div class="popover-card">
+      
+      <div class="popover-drag-bar"></div>
+      <div class="popover-header">
+        <div class="word-title-group">
+          <h3 id="pop-word" class="pop-word">upcoming</h3>
+          <span id="pop-phrase-badge" class="badge-phrase hidden">🏷️ Phrasal Verb</span>
+          <span id="pop-ipa" class="pop-ipa">/ˈʌpˌkʌmɪŋ/</span>
+        </div>
+        <button id="pop-audio-btn" class="btn-audio" title="Play pronunciation">
+          <svg class="audio-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+          </svg>
+          <span class="audio-label">Listen</span>
+        </button>
+      </div>
+
+      <div class="popover-body">
+        <div id="pop-loading" class="pop-loading hidden">
+          <div class="spinner"></div>
+          <span>Translating in context...</span>
+        </div>
+
+        <div id="pop-content" class="pop-content">
+          <div class="translation-block">
+            <span class="flag-icon">🇵🇱</span>
+            <span id="pop-translation" class="pop-translation">nadchodzący, zbliżający się</span>
+          </div>
+
+          <div class="example-block">
+            <div class="example-label">Context Example:</div>
+            <p id="pop-example-en" class="example-en">"about the <strong>upcoming</strong> project"</p>
+            <p id="pop-example-pl" class="example-pl">→ nadchodzący projekt</p>
+          </div>
+
+          <div id="pop-grammar-group" class="grammar-block hidden"></div>
+
+          <div id="pop-meanings-group" class="meanings-block hidden">
+            <div class="meanings-label">Possible meanings in context:</div>
+            <ul id="pop-meanings-list" class="meanings-list"></ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="popover-footer">
+        <button id="pop-add-vocab-btn" class="btn-add-vocab">
+          <svg class="plus-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          <svg class="check-icon hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <span id="pop-add-text">Add to vocabulary</span>
+        </button>
+        <button id="pop-close-btn" class="btn-close-popover" aria-label="Close">✕</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>
