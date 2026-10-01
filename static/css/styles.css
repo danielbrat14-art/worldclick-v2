@@ -78,7 +78,10 @@ body {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  text-decoration: none;
+  color: inherit;
 }
+.brand:focus-visible { outline: 3px solid var(--accent-primary); outline-offset: 6px; border-radius: 6px; }
 
 .brand-logo {
   width: 40px;
@@ -1849,3 +1852,19 @@ html, body {
     margin: 0 auto 0.85rem auto;
   }
 }
+
+/* Account layer extends the existing WordClick visual language. */
+.account-bar{max-width:1200px;width:calc(100% - 48px);margin:18px auto 0;display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-size:14px;border-bottom:1px solid var(--border-color);padding-bottom:14px}
+.account-label{color:var(--text-secondary);margin-right:8px}.account-signout{margin-left:auto;color:#4338ca}.account-bar strong{overflow-wrap:anywhere}
+#account-status{color:var(--text-secondary);font-size:14px}#account-status.error{color:#b91c1c;font-weight:600}
+.translation-note{max-width:1200px;width:calc(100% - 48px);margin:12px auto 28px;font-size:13px;color:#475569}
+.file-label{display:flex;align-items:center;gap:10px;flex-wrap:wrap;color:#4338ca;font-size:14px}.file-label input{max-width:210px;font:inherit}
+.word-token:focus-visible,button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #4f46e5;outline-offset:3px}
+button:disabled{opacity:.6;cursor:wait}.card-footer{flex-wrap:wrap;gap:12px}
+.pop-error{display:grid;gap:16px;padding:10px 0;color:#b91c1c;font-size:16px}.pop-error button{justify-self:start}
+.translation-kind{font-size:14px;color:#475569;margin:6px 0 14px}
+.login-page{min-height:100vh;display:grid;place-items:center;padding:24px;background:#eef2ff}
+.login-card{background:white;border:1px solid #c7d2fe;border-radius:24px;max-width:530px;padding:48px;box-shadow:0 16px 60px #3730a315}
+.login-brand{color:#4f46e5;font-size:22px;font-weight:700;margin-bottom:36px}.login-card h1{font-size:40px;line-height:1.2;margin-bottom:20px;letter-spacing:-1px}
+.login-card p{font-size:16px;color:#475569;margin-bottom:28px}.login-link{display:flex;text-decoration:none;justify-content:center;margin-bottom:24px}.login-card .login-note{font-size:14px;margin-bottom:0}
+@media(max-width:600px){.account-bar{width:calc(100% - 32px);gap:10px}.account-bar #account-status{order:3;width:100%}.account-signout{margin-left:auto}.login-card{padding:28px}.login-card h1{font-size:34px}.translation-note{width:calc(100% - 32px)}.import-mode-selector{flex-wrap:wrap}}

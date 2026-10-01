@@ -2,7 +2,7 @@
  * SuperMemo SM-2 Spaced Repetition (SRS) & Interactive Quiz Engine (with Card Navigation Controls)
  */
 
-import { getSavedVocabulary } from './storage.js';
+import { getSavedVocabulary, saveWordToVocabulary, showAccountMessage } from './storage.js';
 import { playWordAudio } from './speech.js';
 
 let flashcardItems = [];
@@ -118,14 +118,17 @@ export function initFlashcards() {
 
   // Rating buttons listener
   document.querySelectorAll('.btn-srs').forEach(btn => {
-    btn.onclick = (e) => {
+    btn.onclick = async (e) => {
       e.stopPropagation();
       const grade = parseInt(btn.dataset.grade, 10);
       const item = flashcardItems[currentCardIndex];
       
       if (item) {
         const sm2Result = calculateSM2(item, grade);
-        Object.assign(item, sm2Result);
+        btn.disabled=true;
+        try { await saveWordToVocabulary({...item,...sm2Result});Object.assign(item, sm2Result); }
+        catch(error){showAccountMessage(error.message,true);return;}
+        finally{btn.disabled=false;}
       }
 
       cardEl.classList.remove('flipped');
@@ -214,7 +217,7 @@ function renderCurrentQuizQuestion() {
 
   if (currentQuizIndex >= quizQuestions.length) {
     questionEl.textContent = `🎉 Quiz Completed! You scored ${quizScore} out of ${quizQuestions.length}!`;
-    optionsEl.innerHTML = `<button class="btn-primary" onclick="window.restartQuiz()">Try Again</button>`;
+    optionsEl.replaceChildren();const restart=document.createElement('button');restart.className='btn-primary';restart.textContent='Try Again';restart.onclick=initQuiz;optionsEl.appendChild(restart);
     feedbackEl.classList.add('hidden');
     return;
   }
@@ -224,7 +227,7 @@ function renderCurrentQuizQuestion() {
   scoreEl.textContent = `Score: ${quizScore}`;
   feedbackEl.classList.add('hidden');
 
-  questionEl.innerHTML = `"${q.blankSentence}" <div style="font-size:0.9rem; color:#6366f1; margin-top:6px;">(Polish: ${q.translation})</div>`;
+  questionEl.innerHTML = `"${escapeHtml(q.blankSentence)}" <div style="font-size:0.9rem; color:#6366f1; margin-top:6px;">(Polish: ${escapeHtml(q.translation)})</div>`;
 
   optionsEl.innerHTML = '';
   q.options.forEach(opt => {
@@ -281,3 +284,5 @@ function shuffleArray(arr) {
 function escapeRegExp(string) {
   return (string || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
+
+function escapeHtml(value){return String(value||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}

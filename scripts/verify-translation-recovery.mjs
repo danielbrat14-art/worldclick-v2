@@ -1,0 +1,50 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import vm from 'node:vm';
+const {translateOnline}=await import('../static/js/translation-providers.js');
+let calls=[];
+const result=await translateOnline('upcoming',{fetcher:async url=>{
+  calls.push(url);
+  if(url.includes('googleapis'))return new Response('refused',{status:403});
+  return new Response(JSON.stringify({responseStatus:200,responseData:{translatedText:'nadchodzący'}}));
+}});
+assert.equal(result.text,'nadchodzący');assert.equal(result.provider,'MyMemory');assert.equal(calls.length,2);
+console.log('PASS refused primary provider falls back to validated MyMemory');
+await assert.rejects(translateOnline('upcoming',{fetcher:async()=>new Response(JSON.stringify({responseStatus:200,responseData:{translatedText:'upcoming'}}))}));
+console.log('PASS untranslated input is rejected');
+const nodes=new Map();
+function node(id){if(!nodes.has(id))nodes.set(id,{disabled:false,textContent:'',classList:{values:new Set(),add(...v){v.forEach(x=>this.values.add(x));},remove(...v){v.forEach(x=>this.values.delete(x));},contains(v){return this.values.has(v);},toggle(v){this.values.has(v)?this.values.delete(v):this.values.add(v);}}});return nodes.get(id);}
+const document={getElementById:node,querySelector:()=>null};
+node('word-popover').classList.remove('hidden');
+let popover=readFileSync('static/js/popover.js','utf8').replace(/^import .*;$/gm,'').replaceAll('export function','function');
+const context=vm.createContext({document,window:{innerWidth:400},console});
+vm.runInContext(popover,context);
+let retryCalled=false;
+context.showPopoverError('Service unavailable',()=>{retryCalled=true;});
+assert.equal(node('word-popover').classList.contains('hidden'),false);
+assert.equal(node('pop-error').classList.contains('hidden'),false);
+assert.equal(node('pop-add-vocab-btn').disabled,true);
+node('pop-retry-btn').onclick();assert.equal(retryCalled,true);
+console.log('PASS error keeps popover open, disables saving, and exposes working retry');
+globalThis.document=document;
+globalThis.fetch=async(url)=>{
+  if(String(url).startsWith('/api/translate'))return new Response(JSON.stringify({error:'cloud provider rejected',lookup:{word:'scaling',clean_word:'scaling',phrase:'scaling up',is_phrase:true,context_example:'We are scaling up.'}}),{status:503});
+  if(String(url).includes('googleapis'))return new Response(JSON.stringify([[['zwiększać skalę','scaling up']]]));
+  throw Error('Unexpected call');
+};
+const {requestTranslation}=await import('../static/js/api.js');
+const recovered=await requestTranslation('scaling','We are scaling up.');
+assert.equal(recovered.translation,'zwiększać skalę');assert.equal(recovered.phrase,'scaling up');assert.equal(recovered.is_phrase,true);
+console.log('PASS browser fallback preserves phrase and returns a real translation after server failure');
+let networkCalls=0;
+globalThis.fetch=async(url)=>{
+  if(String(url).startsWith('/api/translate'))return new Response(JSON.stringify({word:'upcoming',clean_word:'upcoming',context_example:'The upcoming project.',needs_browser_translation:true,translation:null}));
+  networkCalls++;
+  return new Response(JSON.stringify({responseStatus:200,responseData:{translatedText:'nadchodzący'}}));
+};
+const direct=await requestTranslation('upcoming','The upcoming project.');
+assert.equal(direct.translation,'nadchodzący');assert.equal(networkCalls,2);
+console.log('PASS preprocessing goes straight to browser translation without a failed cloud attempt');
+globalThis.fetch=async()=>new Response(JSON.stringify({error:'Sign in'}),{status:401});
+await assert.rejects(requestTranslation('word','Sentence'),error=>error.status===401);
+console.log('PASS missing authentication never triggers external browser fallback');

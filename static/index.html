@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#4f46e5">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="WordClick">
-  <title>WordClick v2 — Read, Listen & Master English</title>
+  <title>WordClick — Twoja biblioteka angielskiego</title>
   <meta name="description" content="Interactive English reading assistant with Live News Feed, Karaoke Audio Reader, Grammar Insights, SRS Flashcards, Phrasal Verb detection, and Polish translations.">
   
   <!-- Fonts & Icons -->
@@ -15,6 +15,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
   
+  <link rel="icon" href="/favicon.svg">
   <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
@@ -22,7 +23,7 @@
   <!-- App Header -->
   <header class="app-header">
     <div class="header-container">
-      <div class="brand">
+      <a class="brand" id="home-link" href="/" aria-label="WordClick — Live News Feed">
         <div class="brand-logo">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
@@ -33,11 +34,10 @@
         <div class="brand-text">
           <div style="display:flex; align-items:center; gap: 8px;">
             <h1 class="brand-title">WordClick</h1>
-            <span class="v2-tag">v2 Ultimate</span>
           </div>
           <p class="brand-tagline">Read. Listen. Master.</p>
         </div>
-      </div>
+      </a>
 
       <!-- Navigation Tabs -->
       <nav class="app-nav">
@@ -65,6 +65,12 @@
     </div>
   </header>
 
+  <div class="account-bar">
+    <div><span class="account-label">Twoje konto</span> <strong id="account-email">Ładowanie…</strong></div>
+    <div id="account-status" role="status" aria-live="polite">Ładowanie biblioteki…</div>
+    <a id="account-signin" class="account-signout hidden" href="/signin-with-chatgpt?return_to=%2F" target="_top">Zaloguj się</a>
+    <a id="account-signout" class="account-signout hidden" href="/signout-with-chatgpt?return_to=%2F" target="_top">Wyloguj</a>
+  </div>
   <!-- Main Content Wrapper -->
   <main class="app-main">
     
@@ -164,6 +170,7 @@
         <textarea id="text-input" class="text-input" placeholder="Paste your English text here..." rows="5"></textarea>
         <div class="card-footer">
           <div class="word-counter" id="input-word-counter">0 words</div>
+          <label class="file-label">Otwórz plik TXT<input id="text-file-input" type="file" accept=".txt,text/plain" aria-label="Otwórz plik tekstowy"></label>
           <button id="analyze-btn" class="btn-primary" type="button">Analyze text</button>
         </div>
       </div>
@@ -385,9 +392,10 @@
     </section>
 
   </main>
+  <p class="translation-note">Tłumaczenia: słownik WordClick, Google Translate i MyMemory. Do usługi tłumaczenia trafia wybrane słowo oraz fragment zdania.</p>
 
   <!-- WORD POPOVER & MOBILE BOTTOM SHEET -->
-  <div id="word-popover" class="word-popover hidden" role="dialog" aria-modal="true">
+  <div id="word-popover" class="word-popover hidden" role="dialog" aria-modal="true" aria-labelledby="pop-word">
     <div class="popover-backdrop" id="popover-backdrop"></div>
     <div class="popover-card">
       
@@ -414,11 +422,16 @@
           <span>Translating in context...</span>
         </div>
 
+        <div id="pop-error" class="pop-error hidden" role="alert">
+          <p id="pop-error-message"></p>
+          <button id="pop-retry-btn" class="btn-primary" type="button">Spróbuj ponownie</button>
+        </div>
         <div id="pop-content" class="pop-content">
           <div class="translation-block">
             <span class="flag-icon">🇵🇱</span>
             <span id="pop-translation" class="pop-translation">nadchodzący, zbliżający się</span>
           </div>
+          <p id="pop-translation-kind" class="translation-kind"></p>
 
           <div class="example-block">
             <div class="example-label">Context Example:</div>

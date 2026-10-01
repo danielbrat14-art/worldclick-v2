@@ -1,11 +1,13 @@
+import { registerWordClickTools } from './webmcp.js';
+import { initHomeNavigation } from './home.js';
 /**
  * WordClick v2 Ultimate — Main Controller with Live News Feed
  */
 
 import { renderInteractiveText } from './reader.js';
 import { requestTranslation, fetchArticleFromUrl, fetchLiveNewsFeed } from './api.js';
-import { initPopover, showPopoverLoading, updatePopoverContent, hidePopover } from './popover.js';
-import { getSavedVocabulary, removeWordFromVocabulary, clearAllVocabulary } from './storage.js';
+import { initPopover, showPopoverLoading, showPopoverError, updatePopoverContent, hidePopover } from './popover.js';
+import { getSavedVocabulary, removeWordFromVocabulary, clearAllVocabulary, initializeVocabulary, showAccountMessage } from './storage.js';
 import { playWordAudio } from './speech.js';
 import { initKaraokePlayer, stopKaraokeReading } from './karaoke.js';
 import { initFlashcards, initQuiz } from './srs.js';
@@ -40,7 +42,7 @@ Experts point out that transitioning away from fossil fuels requires significant
 
 const DEFAULT_PASTE_EXAMPLE = `Yesterday I had a meeting with my manager about the upcoming project. We discussed the main risks, agreed on the next steps and reviewed the project deadline. One of the biggest challenges is making sure that all stakeholders are aligned before we start the implementation.`;
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   initPopover();
   initNavigation();
   initModeSelector();
@@ -52,9 +54,12 @@ document.addEventListener('DOMContentLoaded', () => {
   initKaraokePlayer();
   initStudyTab();
   initFontSizeControls();
+  initHomeNavigation(() => { readerRequestId++; });
 
-  window.addEventListener('vocab-changed', updateVocabBadge);
+  window.addEventListener('vocab-changed', () => { updateVocabBadge(); if(document.getElementById('vocab-view').classList.contains('active'))renderVocabularyGrid(document.getElementById('vocab-search').value.trim()); });
   updateVocabBadge();
+  try { await initializeVocabulary(); registerWordClickTools(); }
+  catch(error) { showAccountMessage(error.message + ' Odśwież stronę, aby spróbować ponownie.',true); }
 });
 
 function initFontSizeControls() {
@@ -301,11 +306,13 @@ async function initNewsFeed() {
     loadFeed();
   });
 
-  // Load feed initially
-  loadFeed();
+  // The home navigation opens News on every visit and refresh.
+  document.querySelector('[data-mode="news"]').addEventListener('click', () => { if(!window.wordclickNewsLoaded){window.wordclickNewsLoaded=true;loadFeed();} });
 }
 
+let readerRequestId=0;
 async function loadNewsArticleIntoReader(article) {
+  const requestId=++readerRequestId;
   const readerContainer = document.getElementById('interactive-container');
   const articleBody = document.getElementById('interactive-text-body');
   const displayTitle = document.getElementById('article-display-title');
@@ -335,6 +342,7 @@ async function loadNewsArticleIntoReader(article) {
     cleanTextToRead = `${article.title}.\n\n${article.description || article.title}`;
   }
 
+  if(requestId!==readerRequestId)return;
   renderInteractiveText(cleanTextToRead, articleBody, handleWordClick);
   readerContainer.classList.remove('hidden');
   readerContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -359,9 +367,11 @@ function initUrlImporter() {
 
     loadingEl.classList.remove('hidden');
     importBtn.disabled = true;
+    const requestId=++readerRequestId;
 
     try {
       const article = await fetchArticleFromUrl(url);
+      if(requestId!==readerRequestId)return;
 
       if (article.title) {
         displayTitle.textContent = article.title;
@@ -403,6 +413,13 @@ function initInputHandlers() {
     updateWordCounter(textInput.value);
   });
 
+  document.getElementById('text-file-input').addEventListener('change', async event => {
+    const file=event.target.files[0]; if(!file)return;
+    if(file.size>100000){showAccountMessage('Wybierz plik TXT mniejszy niż 100 KB.',true);return;}
+    try { textInput.value=await file.text();updateWordCounter(textInput.value);analyzeText(); }
+    catch {showAccountMessage('Nie udało się otworzyć pliku.',true);}
+    event.target.value='';
+  });
   loadExampleBtn.addEventListener('click', () => {
     textInput.value = DEFAULT_PASTE_EXAMPLE;
     updateWordCounter(DEFAULT_PASTE_EXAMPLE);
@@ -425,6 +442,7 @@ function initInputHandlers() {
       return;
     }
 
+    readerRequestId++;
     displayTitle.classList.add('hidden');
     metaInfo.textContent = `Interactive Reader — Click any word or phrasal verb for instant Polish translation`;
 
@@ -460,11 +478,20 @@ function initLibraryHandlers() {
 }
 
 /* Word Click Flow */
+let translationRequestId=0;
 async function handleWordClick(eventData) {
-  const { word, sentence, fullText, element } = eventData;
+  const { word, sentence, wordOffset, element } = eventData;
   showPopoverLoading(element);
-  const translationData = await requestTranslation(word, sentence, fullText);
-  updatePopoverContent(translationData);
+  const clickId=++translationRequestId;
+  try {
+    const translationData = await requestTranslation(word, sentence, wordOffset);
+    if(clickId===translationRequestId && element.classList.contains('active-word'))updatePopoverContent(translationData);
+  } catch(error) {
+    if(clickId===translationRequestId && element.classList.contains('active-word')){
+      showPopoverError(error.message,()=>handleWordClick(eventData));
+      showAccountMessage(error.message,true);
+    }
+  }
 }
 
 function updateWordCounter(text) {
@@ -482,10 +509,9 @@ function initVocabHandlers() {
     renderVocabularyGrid(searchInput.value.trim());
   });
 
-  clearBtn.addEventListener('click', () => {
+  clearBtn.addEventListener('click', async () => {
     if (confirm('Are you sure you want to clear all saved vocabulary?')) {
-      clearAllVocabulary();
-      renderVocabularyGrid();
+      try { await clearAllVocabulary();renderVocabularyGrid(); } catch(error){showAccountMessage(error.message,true);}
     }
   });
 }
@@ -545,10 +571,9 @@ function renderVocabularyGrid(filterQuery = '') {
       playWordAudio(item.word);
     });
 
-    card.querySelector('.btn-remove-vocab').addEventListener('click', (e) => {
+    card.querySelector('.btn-remove-vocab').addEventListener('click', async (e) => {
       e.stopPropagation();
-      removeWordFromVocabulary(item.id);
-      renderVocabularyGrid(filterQuery);
+      try { await removeWordFromVocabulary(item.id);renderVocabularyGrid(filterQuery); } catch(error){showAccountMessage(error.message,true);}
     });
 
     gridEl.appendChild(card);
