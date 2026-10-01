@@ -28,10 +28,14 @@ function createParagraphElement(paragraphText, rawText, onWordClickCallback) {
       const span = document.createElement('span');
       span.className = 'word-token';
       span.textContent = token.text;
+      span.tabIndex=0;span.setAttribute('role','button');span.setAttribute('aria-label','Przetłumacz: '+token.text);
+      span.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();span.click();}});
       span.dataset.word = token.text;
       span.dataset.cleanWord = token.text.replace(/^[^\w]+|[^\w]+$/g, '');
       
-      const sentenceContext = findSentenceForWord(token.text, sentences, paragraphText);
+      const sentenceRecord = sentences.find(sentence=>token.index>=sentence.start && token.index<sentence.end) || {text:paragraphText,start:0};
+      const sentenceContext = sentenceRecord.text;
+      const wordOffset = token.index - sentenceRecord.start;
       span.dataset.sentence = sentenceContext;
 
       span.addEventListener('click', (e) => {
@@ -44,6 +48,7 @@ function createParagraphElement(paragraphText, rawText, onWordClickCallback) {
             word: token.text,
             cleanWord: span.dataset.cleanWord,
             sentence: sentenceContext,
+            wordOffset,
             fullText: rawText,
             element: span
           });
@@ -69,9 +74,9 @@ function tokenizeParagraph(text) {
 
   while ((match = regex.exec(text)) !== null) {
     if (match[1]) {
-      tokens.push({ text: match[1], isWord: true });
+      tokens.push({ text: match[1], isWord: true, index: match.index });
     } else if (match[2]) {
-      tokens.push({ text: match[2], isWord: false });
+      tokens.push({ text: match[2], isWord: false, index: match.index });
     }
   }
 
@@ -79,13 +84,11 @@ function tokenizeParagraph(text) {
 }
 
 function extractSentences(text) {
-  return text
-    .split(/(?<=[.!?])\s+/)
-    .map(s => s.trim())
-    .filter(s => s.length > 0);
-}
-
-function findSentenceForWord(word, sentences, paragraphText) {
-  const match = sentences.find(s => s.includes(word));
-  return match || paragraphText;
+  const sentences=[];let start=0;
+  for(const match of text.matchAll(/(?<=[.!?])\s+/g)) {
+    sentences.push({text:text.slice(start,match.index),start,end:match.index});
+    start=match.index+match[0].length;
+  }
+  if(start<text.length)sentences.push({text:text.slice(start),start,end:text.length});
+  return sentences;
 }

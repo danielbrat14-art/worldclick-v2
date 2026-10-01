@@ -7,6 +7,8 @@ from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 from flask import Flask, request, jsonify, send_from_directory
 from dotenv import load_dotenv
+from concurrent.futures import ThreadPoolExecutor
+from public_fetch import fetch_public_article
 
 load_dotenv()
 
@@ -272,53 +274,58 @@ FALLBACK_DICTIONARY = {
 def index():
     return send_from_directory('static', 'index.html')
 
-@app.route('/api/news-feed', methods=['GET'])
-def get_news_feed():
+def fetch_feed_articles(feed_info):
     all_articles = []
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
     }
 
-    for feed_info in NEWS_FEEDS:
-        try:
-            res = requests.get(feed_info['url'], headers=headers, timeout=5, verify=False)
-            if res.status_code == 200:
-                root = ET.fromstring(res.content)
-                items = root.findall('.//item') or root.findall('.//{http://www.w3.org/2005/Atom}entry')
-                
-                for item in items[:6]:
-                    title_el = item.find('title')
-                    desc_el = item.find('description') or item.find('{http://www.w3.org/2005/Atom}summary') or item.find('{http://www.w3.org/2005/Atom}content')
-                    pub_el = item.find('pubDate') or item.find('{http://www.w3.org/2005/Atom}updated')
+    try:
+        res = requests.get(feed_info['url'].replace('http://', 'https://', 1), headers=headers, timeout=5)
+        if res.status_code == 200:
+            root = ET.fromstring(res.content)
+            items = root.findall('.//item') or root.findall('.//{http://www.w3.org/2005/Atom}entry')
 
-                    title = title_el.text.strip() if title_el is not None and title_el.text else ""
-                    link = extract_rss_link(item)
-                    raw_desc = desc_el.text.strip() if desc_el is not None and desc_el.text else ""
-                    pub_date = pub_el.text.strip() if pub_el is not None and pub_el.text else ""
+            for item in items[:6]:
+                title_el = item.find('title')
+                desc_el = item.find('description') or item.find('{http://www.w3.org/2005/Atom}summary') or item.find('{http://www.w3.org/2005/Atom}content')
+                pub_el = item.find('pubDate') or item.find('{http://www.w3.org/2005/Atom}updated')
 
-                    # Clean title
-                    clean_title = html.unescape(title)
-                    clean_title = re.sub(r'\s*[\-\|]\s*(ProjectManagement\.com|The Economist|BBC News|Reuters|Financial Times|Bloomberg|TechCrunch|MIT Technology Review|The Verge|HBR|Harvard Business Review)\s*$', '', clean_title, flags=re.IGNORECASE).strip()
+                title = title_el.text.strip() if title_el is not None and title_el.text else ""
+                link = extract_rss_link(item)
+                raw_desc = desc_el.text.strip() if desc_el is not None and desc_el.text else ""
+                pub_date = pub_el.text.strip() if pub_el is not None and pub_el.text else ""
 
-                    # Clean description
-                    clean_desc = html.unescape(raw_desc)
-                    clean_desc = re.sub(r'<[^>]+>', '', clean_desc)
-                    clean_desc = re.sub(r'&nbsp;', ' ', clean_desc).replace('\xa0', ' ').strip()
-                    clean_desc = re.sub(r'\s*[\-\|]\s*ProjectManagement\.com.*$', '', clean_desc, flags=re.IGNORECASE).strip()
+                # Clean title
+                clean_title = html.unescape(title)
+                clean_title = re.sub(r'\s*[\-\|]\s*(ProjectManagement\.com|The Economist|BBC News|Reuters|Financial Times|Bloomberg|TechCrunch|MIT Technology Review|The Verge|HBR|Harvard Business Review)\s*$', '', clean_title, flags=re.IGNORECASE).strip()
 
-                    if clean_title and link:
-                        all_articles.append({
-                            'title': clean_title,
-                            'link': link,
-                            'description': clean_desc,
-                            'pubDate': pub_date,
-                            'source': feed_info['source'],
-                            'category': feed_info['category'],
-                            'badge_color': feed_info['badge_color']
-                        })
-        except Exception as e:
-            print(f"[RSS Error for {feed_info['source']}] {e}")
+                # Clean description
+                clean_desc = html.unescape(raw_desc)
+                clean_desc = re.sub(r'<[^>]+>', '', clean_desc)
+                clean_desc = re.sub(r'&nbsp;', ' ', clean_desc).replace('\xa0', ' ').strip()
+                clean_desc = re.sub(r'\s*[\-\|]\s*ProjectManagement\.com.*$', '', clean_desc, flags=re.IGNORECASE).strip()
 
+                if clean_title and link:
+                    all_articles.append({
+                        'title': clean_title,
+                        'link': link,
+                        'description': clean_desc,
+                        'pubDate': pub_date,
+                        'source': feed_info['source'],
+                        'category': feed_info['category'],
+                        'badge_color': feed_info['badge_color']
+                    })
+    except Exception as e:
+        print(f"[RSS Error for {feed_info['source']}] {e}")
+
+    return all_articles
+
+@app.route('/api/news-feed', methods=['GET'])
+def get_news_feed():
+    with ThreadPoolExecutor(max_workers=6) as pool:
+        batches = pool.map(fetch_feed_articles, NEWS_FEEDS)
+        all_articles = [article for batch in batches for article in batch]
     return jsonify({'articles': all_articles, 'total': len(all_articles)})
 
 
@@ -338,7 +345,7 @@ def import_url():
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
             'Accept-Language': 'en-US,en;q=0.9'
         }
-        res = requests.get(url, headers=headers, timeout=10, verify=False)
+        res = fetch_public_article(url, headers)
         res.raise_for_status()
         res.encoding = 'utf-8'
         soup = BeautifulSoup(res.text, 'html.parser')
@@ -410,9 +417,8 @@ def import_url():
             'word_count': word_count
         })
 
-    except Exception as e:
-        print(f"[URL Import Error] {e}")
-        return jsonify({'error': f'Failed to import article from URL: {str(e)}'}), 500
+    except (ValueError, requests.RequestException):
+        return jsonify({'error': 'Nie udało się otworzyć publicznego artykułu HTTPS. Wklej jego tekst.'}), 422
 
 
 @app.route('/api/translate', methods=['POST'])
@@ -426,6 +432,44 @@ def translate_word():
         return jsonify({'error': 'Word is required'}), 400
 
     clean_word = re.sub(r'^[^\w]+|[^\w]+$', '', raw_word).lower()
+
+    if data.get('prefer_browser') is True:
+        # The browser performs contextual translation. The server only resolves
+        # the exact word/phrase span, avoiding cloud-IP provider refusals.
+        sentence = sentence[:2000]
+        raw_word = raw_word[:120]
+        offset = data.get('word_offset')
+        if type(offset) is not int or offset < 0 or sentence[offset:offset + len(raw_word)].lower() != raw_word.lower():
+            match = re.search(r'\b' + re.escape(raw_word) + r'\b', sentence, re.I)
+            offset = match.start() if match else 0
+        phrase = None
+        for phrase_key, item in KNOWN_PHRASES.items():
+            if clean_word not in phrase_key.split():
+                continue
+            for match in re.finditer(r'\b' + re.escape(phrase_key) + r'\b', sentence, re.I):
+                if match.start() <= offset < match.end():
+                    phrase = {**item, 'start': match.start(), 'end': match.end()}
+                    break
+            if phrase:
+                break
+        if not phrase and is_phrasal_root(clean_word):
+            for particle in PARTICLES:
+                match = re.match(r'\b(' + re.escape(clean_word) + r'\s+' + re.escape(particle) + r')\b', sentence[offset:], re.I)
+                if match:
+                    phrase = {'phrase': match.group(1), 'phrase_type': 'Phrasal Verb',
+                              'start': offset, 'end': offset + len(match.group(1))}
+                    break
+        dictionary = FALLBACK_DICTIONARY.get(clean_word, {})
+        known = phrase.get('translation') if phrase else dictionary.get('translation')
+        return jsonify(word=raw_word, clean_word=clean_word, is_phrase=bool(phrase),
+                       phrase=phrase.get('phrase') if phrase else None,
+                       phrase_type=phrase.get('phrase_type') if phrase else None,
+                       translation=known, pronunciation=dictionary.get('pronunciation', ''),
+                       possible_meanings=(phrase or dictionary).get('possible_meanings', []),
+                       context_example=sentence or raw_word, word_offset=offset,
+                       target_start=phrase['start'] if phrase else offset,
+                       target_end=phrase['end'] if phrase else offset + len(raw_word),
+                       needs_browser_translation=True, source='dictionary' if known else 'browser')
 
     detected_phrase = detect_phrasal_verb(clean_word, raw_word, sentence)
 
@@ -696,7 +740,10 @@ def fetch_dynamic_translation(raw_word, clean_word, sentence, detected_phrase):
     }
 
 
+from render_accounts import register_accounts
+register_accounts(app)
+
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 5001))
     print(f"Starting WordClick v2 server on http://127.0.0.1:{port}")
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(host='0.0.0.0', port=port, debug=False)

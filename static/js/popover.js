@@ -2,7 +2,7 @@
  * Popover & Mobile Bottom Sheet UI Controller (with Grammar Insights Support)
  */
 import { playWordAudio } from './speech.js';
-import { saveWordToVocabulary, removeWordFromVocabulary, isWordSaved } from './storage.js';
+import { saveWordToVocabulary, removeWordFromVocabulary, isWordSaved, showAccountMessage, isSignedIn } from './storage.js';
 import { detectGrammarInsights } from './grammar.js';
 
 let currentTranslationData = null;
@@ -32,18 +32,28 @@ export function initPopover() {
     });
   });
 
-  addVocabBtn.addEventListener('click', () => {
-    if (!currentTranslationData) return;
-
-    const cleanKey = currentTranslationData.phrase || currentTranslationData.clean_word || currentTranslationData.word;
-    
-    if (isWordSaved(cleanKey)) {
-      removeWordFromVocabulary(cleanKey);
-      updateVocabButtonState(false);
-    } else {
-      saveWordToVocabulary(currentTranslationData);
-      updateVocabButtonState(true);
+  addVocabBtn.addEventListener('click', async () => {
+    if (!currentTranslationData || addVocabBtn.disabled) return;
+    if(!isSignedIn()){
+      // Keep the selected text and translation visible; sign-in is a deliberate
+      // top-level link, and the public reader does not redirect unexpectedly.
+      showAccountMessage('Zaloguj się przyciskiem u góry, aby zapisać słowo w swojej bibliotece.',true);
+      const signIn=document.getElementById('account-signin');
+      if(!signIn.classList.contains('hidden')){
+        signIn.focus();
+        signIn.scrollIntoView({behavior:'smooth',block:'center'});
+      }else showAccountMessage('Logowanie Google jest w przygotowaniu. Słowo nie zostało zapisane.',true);
+      return;
     }
+    const snapshot=currentTranslationData;
+    const cleanKey=snapshot.phrase || snapshot.clean_word || snapshot.word;
+    addVocabBtn.disabled=true;
+    try {
+      if(isWordSaved(cleanKey,snapshot))await removeWordFromVocabulary(cleanKey);
+      else await saveWordToVocabulary(snapshot);
+      if(currentTranslationData===snapshot)updateVocabButtonState(isWordSaved(cleanKey,snapshot));
+    } catch(error) { showAccountMessage(error.message,true); }
+    finally {addVocabBtn.disabled=false;}
   });
 }
 
@@ -56,6 +66,9 @@ export function showPopoverLoading(targetElement) {
   const badgeEl = document.getElementById('pop-phrase-badge');
   const grammarBlock = document.getElementById('pop-grammar-group');
 
+  currentTranslationData=null;
+  document.getElementById('pop-add-vocab-btn').disabled=true;
+  document.getElementById('pop-error').classList.add('hidden');
   wordEl.textContent = targetElement.dataset.word || targetElement.textContent;
   ipaEl.textContent = '';
   if (badgeEl) badgeEl.classList.add('hidden');
@@ -68,8 +81,21 @@ export function showPopoverLoading(targetElement) {
   positionPopover(targetElement);
 }
 
+export function showPopoverError(message, retry) {
+  currentTranslationData=null;
+  document.getElementById('pop-loading').classList.add('hidden');
+  document.getElementById('pop-content').classList.add('hidden');
+  document.getElementById('pop-add-vocab-btn').disabled=true;
+  document.getElementById('pop-error-message').textContent=message;
+  document.getElementById('pop-retry-btn').onclick=retry;
+  document.getElementById('pop-error').classList.remove('hidden');
+  const target=document.querySelector('.word-token.active-word');
+  if(target)positionPopover(target);
+}
+
 export function updatePopoverContent(data) {
   currentTranslationData = data;
+  document.getElementById('pop-add-vocab-btn').disabled=false;
 
   const loadingEl = document.getElementById('pop-loading');
   const contentEl = document.getElementById('pop-content');
@@ -96,11 +122,12 @@ export function updatePopoverContent(data) {
 
   ipaEl.textContent = data.pronunciation || '';
   translationEl.textContent = data.translation || data.word;
+  document.getElementById('pop-translation-kind').textContent=data.translation_kind==='contextual'?'Znaczenie w zdaniu':'Znaczenie słownikowe — porównaj ze zdaniem poniżej';
 
   const highlightTarget = data.phrase || data.word;
   if (data.context_example) {
     const regex = new RegExp(`\\b(${escapeRegExp(highlightTarget)})\\b`, 'gi');
-    exampleEnEl.innerHTML = `"${data.context_example.replace(regex, '<strong>$1</strong>')}"`;
+    exampleEnEl.innerHTML = `"${escapeHtml(data.context_example).replace(regex, '<strong>$1</strong>')}"`;
   } else {
     exampleEnEl.textContent = `"${highlightTarget}"`;
   }
@@ -109,7 +136,7 @@ export function updatePopoverContent(data) {
 
   if (data.possible_meanings && data.possible_meanings.length > 1) {
     meaningsList.innerHTML = data.possible_meanings
-      .map(m => `<li>${m}</li>`)
+      .map(m => `<li>${escapeHtml(m)}</li>`)
       .join('');
     meaningsGroup.classList.remove('hidden');
   } else {
@@ -133,7 +160,7 @@ export function updatePopoverContent(data) {
   }
 
   const cleanKey = data.phrase || data.clean_word || data.word;
-  updateVocabButtonState(isWordSaved(cleanKey));
+  updateVocabButtonState(isWordSaved(cleanKey,data));
 
   loadingEl.classList.add('hidden');
   contentEl.classList.remove('hidden');
