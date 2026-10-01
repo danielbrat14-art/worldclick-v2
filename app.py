@@ -9,10 +9,12 @@ from flask import Flask, request, jsonify, send_from_directory
 from dotenv import load_dotenv
 from concurrent.futures import ThreadPoolExecutor
 from public_fetch import fetch_public_article
+from render_portal import register_portal_redirect
 
 load_dotenv()
 
 app = Flask(__name__, static_folder='static', static_url_path='')
+register_portal_redirect(app)
 
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY') or os.getenv('GOOGLE_API_KEY')
 
