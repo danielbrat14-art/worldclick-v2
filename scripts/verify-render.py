@@ -21,6 +21,7 @@ app.config.update(SERVER_NAME='worldclick.onrender.com', PREFERRED_URL_SCHEME='h
 USER_A, USER_B = str(uuid.uuid4()), str(uuid.uuid4())
 users = {'access-A': USER_A, 'access-B': USER_B}
 words, calls = {}, []
+google_enabled = False
 
 class Response:
     def __init__(self, data, status=200):
@@ -33,6 +34,8 @@ def provider(method, url, **options):
     calls.append((method, url, options))
     params = options.get('params') or {}
     token = options['headers'].get('Authorization', '').replace('Bearer ', '')
+    if url.endswith('/auth/v1/settings'):
+        return Response({'external': {'google': google_enabled}})
     if '/auth/v1/token' in url:
         code = options['json'].get('auth_code')
         if code == 'fail':
@@ -100,6 +103,12 @@ with patch('render_accounts.requests.request', provider):
     me = guest.get('/api/me', headers={'oai-authenticated-user-id': USER_A,
                                       'oai-authenticated-user-email': 'forged@test'}).get_json()
     check(me['user'] is None and me['auth']['provider'] == 'Google', 'Render ignores forged Sites identity headers')
+    check(me['auth']['enabled'] is False and guest.get('/auth/google').status_code == 503,
+          'unconfigured Google provider hides login and rejects auth start')
+    google_enabled = True
+    with patch('render_accounts.time.monotonic', return_value=time.monotonic() + 60):
+        check(guest.get('/api/me').get_json()['auth']['enabled'] is True,
+              'Google login becomes available after provider activation')
     for method in ('get', 'post', 'delete'):
         check(getattr(guest, method)('/api/vocabulary', json={} if method == 'post' else None).status_code == 401, 'guest cannot ' + method + ' vocabulary')
     check(guest.get('/auth/callback?code=A').status_code == 401, 'callback without browser verifier is rejected')
@@ -142,4 +151,4 @@ with patch('render_accounts.requests.request', provider):
         except ValueError:
             check(True, 'article import rejects hostnames resolving to private IPs')
 
-print(f'Verified {count} Render auth/API checks with a mocked provider. Live OAuth and RLS verification is pending.')
+print(f'Verified {count} Render auth/API checks with a mocked provider. Live Google OAuth is pending; real RLS is checked separately.')

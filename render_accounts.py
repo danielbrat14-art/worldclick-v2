@@ -73,6 +73,21 @@ def register_accounts(app):
         session['tokens'] = {'access': access, 'refresh': refresh, 'expires_at': time.time() + expires}
         session.permanent = True
 
+    google_status = {'enabled': False, 'until': 0}
+
+    def google_ready():
+        if not configured:
+            return False
+        now = time.monotonic()
+        if now >= google_status['until']:
+            try:
+                settings = remote('GET', '/auth/v1/settings')
+                enabled = settings.get('external', {}).get('google') is True
+            except (AccountError, AttributeError, TypeError):
+                enabled = False
+            google_status.update(enabled=enabled, until=now + 30)
+        return google_status['enabled']
+
     def user(required=False):
         if hasattr(g, 'account_user'):
             result = g.account_user
@@ -143,13 +158,13 @@ def register_accounts(app):
             session['csrf'] = secrets.token_urlsafe(32)
         return jsonify(user={'email': current['email']} if current else None,
                        storage='account' if current else 'none',
-                       auth={'enabled': configured, 'provider': 'Google', 'login_url': '/auth/google',
+                       auth={'enabled': google_ready(), 'provider': 'Google', 'login_url': '/auth/google',
                              'logout_url': '/auth/logout', 'logout_method': 'POST',
                              'csrf_token': session.get('csrf', '')})
 
     @app.get('/auth/google')
     def google_login():
-        if not configured:
+        if not google_ready():
             raise AccountError(503, 'Logowanie Google nie jest jeszcze skonfigurowane.')
         # The callback is fixed by server config, never by a Host/next parameter.
         verifier = secrets.token_urlsafe(64)

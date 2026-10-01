@@ -2,7 +2,7 @@
 
 ## Current status
 
-This implementation is prepared and tested locally with a simulated Supabase provider. It has not been deployed to `https://worldclick.onrender.com` and has not completed a real Google login. The WordClick Supabase project was created in Frankfurt on the connected owner's Free organization after a confirmed project cost of $0/month. The migration is applied, real PostgreSQL RLS/isolation checks passed in a rolled-back transaction, and security advisors reported no notices. Google provider/redirect configuration and the Render environment/deployment remain pending.
+The Render account adapter passes 33 local checks with a simulated Supabase provider. Real Google login remains pending provider/redirect configuration. The WordClick Supabase project `zlhveupryhlbybtvfmvu` is in Frankfurt on the connected owner's Free organization after a confirmed project cost of $0/month. The migration is applied, real PostgreSQL RLS/isolation checks passed in a rolled-back transaction, and security advisors reported no notices. Check Render's deployment status for the exact live commit.
 
 The Flask entrypoint is `app:app`. The Sites Worker is a separate hosting adapter and continues to use ChatGPT authentication. Deploying this Flask version to Render keeps the same reader, contextual browser translation, news-first home and logo reset. Production Sites has not been changed by this Render preparation.
 
@@ -10,7 +10,7 @@ The Flask entrypoint is `app:app`. The Sites Worker is a separate hosting adapte
 
 - Original pre-account version: tag `worldclick-backup-before-login-20261001`, commit `00d7abd9ee55875097ef0b3c8fee5a607399accf`.
 - Last functioning public Sites version: tag `worldclick-backup-before-render-google-20261001`, commit `0de2ced531a75f0fd65b38bf0094af547a9937e2`.
-- Changes are on branch `feature/render-google-auth`; the original GitHub main branch has not been pushed or replaced.
+- The original GitHub main commit is preserved on branch `backup/pre-google-auth-20261001`. Changes were prepared separately in `feature/render-google-auth` and PR #1 before rollout.
 - Keep the current Render deploy as a rollback target. Deploy an exact reviewed commit only after verifying settings. Rolling back the code does not remove the new database table or modify old Sites/D1 vocabulary.
 
 ## Configure Supabase
@@ -29,12 +29,12 @@ Official documentation: https://supabase.com/docs/guides/auth/social-login/auth-
 Keep the existing `worldclick` service, GitHub repository and public address. Use these settings:
 
 - Build: `pip install -r requirements.txt` (includes pinned `requirements-render.lock`).
-- Start: `gunicorn app:app --bind 0.0.0.0:$PORT --workers 1 --threads 4 --timeout 60`.
+- Start: `gunicorn app:app`. The committed `gunicorn.conf.py` binds `0.0.0.0:$PORT` with one worker, four threads and a 60-second timeout.
 - Health check: `/healthz`.
 - Runtime environment: `APP_BASE_URL`, `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SECRET_KEY`, as listed in `render.env.example`.
 - Generate `SECRET_KEY` securely with at least 32 characters and keep it stable across restarts/workers. Store real values in Render Environment, never in source or screenshots. Do not use a Supabase secret/service-role key. The adapter accepts modern publishable keys only.
 
-Missing configuration leaves reading/translation available, hides the login button and does not pretend that words were saved. `/healthz` checks process availability, not readiness of external Google configuration.
+Missing configuration leaves reading/translation available, hides the login button and does not pretend that words were saved. The adapter also checks Supabase's public Auth settings and keeps Google login hidden until the provider is enabled (settings are cached for 30 seconds). Configure both callback allowlists before enabling it. `/healthz` checks process availability, not readiness of external Google configuration.
 
 ## Account protections
 
