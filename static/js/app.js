@@ -7,7 +7,7 @@ import { initHomeNavigation } from './home.js';
 import { renderInteractiveText } from './reader.js';
 import { requestTranslation, fetchArticleFromUrl, fetchLiveNewsFeed } from './api.js';
 import { initPopover, showPopoverLoading, showPopoverError, updatePopoverContent, hidePopover } from './popover.js';
-import { getSavedVocabulary, removeWordFromVocabulary, clearAllVocabulary, initializeVocabulary, showAccountMessage } from './storage.js';
+import { getSavedVocabulary, removeWordFromVocabulary, clearAllVocabulary, initializeVocabulary, showAccountMessage, showLibraryStatus } from './storage.js';
 import { playWordAudio } from './speech.js';
 import { initKaraokePlayer, stopKaraokeReading } from './karaoke.js';
 import { initFlashcards, initQuiz } from './srs.js';
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initKaraokePlayer();
   initStudyTab();
   initFontSizeControls();
-  initHomeNavigation(() => { readerRequestId++; });
+  initHomeNavigation(() => { readerRequestId++; showLibraryStatus(); });
 
   window.addEventListener('vocab-changed', () => { updateVocabBadge(); if(document.getElementById('vocab-view').classList.contains('active'))renderVocabularyGrid(document.getElementById('vocab-search').value.trim()); });
   updateVocabBadge();

@@ -5,7 +5,8 @@ export async function translateOnline(input, options = {}) {
   let text=String(input||'').trim();
   if(!text)return null;
   while(new TextEncoder().encode(text).length>480)text=text.slice(0,-1);
-  const fetcher=options.fetcher || ((url)=>fetch(url,{signal:AbortSignal.timeout(6000)}));
+  // MyMemory can take around ten seconds for an uncached sentence.
+  const fetcher=options.fetcher || ((url)=>fetch(url,{signal:AbortSignal.timeout(url.startsWith('https://api.mymemory.translated.net/')?15000:6000)}));
   const report=options.reportFailure || (()=>{});
   const query=encodeURIComponent(text);
   for(const provider of options.providers || ['Google Translate','MyMemory']) {
