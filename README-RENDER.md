@@ -1,5 +1,13 @@
 # WordClick on Render with Google accounts
 
+## Current production choice: ChatGPT
+
+The owner chose to keep the previous ChatGPT sign-in on 2026-10-01. Set `WORDCLICK_CHATGPT_PORTAL_URL=https://wordclick-private.danielbrat14.chatgpt.site` on the existing Render service. `render_portal.py` redirects browser navigation to this fixed HTTPS Site, where the platform handles ChatGPT authentication and the existing D1 per-user libraries remain authoritative. The address visibly changes to the Site origin. `/healthz` remains available on Render; legacy POST/DELETE APIs return 410 instead of forwarding private bodies or using the unused Supabase adapter. Callback codes, query strings and caller identity headers are never forwarded.
+
+The Google/Supabase implementation below is retained as an optional future adapter. Its real Google login has not been configured or tested. Its database is not the active ChatGPT vocabulary store. Disable the portal redirect only as part of a separately reviewed switch back to that adapter.
+
+Validate the current Render mode with `python scripts/verify-portal.py`. Validate the optional adapter with `WORDCLICK_CHATGPT_PORTAL_URL` unset.
+
 ## Current status
 
 The Render account adapter passes 33 local checks with a simulated Supabase provider. Real Google login remains pending provider/redirect configuration. The WordClick Supabase project `zlhveupryhlbybtvfmvu` is in Frankfurt on the connected owner's Free organization after a confirmed project cost of $0/month. The migration is applied, real PostgreSQL RLS/isolation checks passed in a rolled-back transaction, and security advisors reported no notices. Check Render's deployment status for the exact live commit.
