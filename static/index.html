@@ -61,8 +61,6 @@
           My Vocabulary
           <span id="vocab-count-badge" class="badge">0</span>
         </button>
-        <button id="nav-lessons-btn" class="nav-tab" data-target="lessons-view">Moje lekcje</button>
-        <button id="nav-phrases-btn" class="nav-tab" data-target="phrases-view">Moje zwroty</button>
       </nav>
     </div>
   </header>
@@ -407,51 +405,6 @@
       </div>
     </section>
 
-    <section id="lessons-view" class="view-panel">
-      <div class="card">
-        <div class="lesson-toolbar"><div><h2>Moje lekcje</h2><p class="library-subtitle">Wklej notatki z Preply, dodaj zwroty i wracaj do materiału przed następną lekcją.</p></div><button id="lesson-new" class="btn-primary" type="button">+ Dodaj lekcję</button><button id="lesson-reload" class="btn-ghost" type="button">Wczytaj ponownie</button></div>
-        <p id="lesson-status" role="status" aria-live="polite">Zaloguj się, aby zapisywać i otwierać własne lekcje.</p>
-        <div class="lessons-layout">
-          <aside><label for="lesson-search">Szukaj lekcji</label><input id="lesson-search" type="search" placeholder="Temat, lektor lub notatki"><div id="lesson-list" class="lesson-list"></div></aside>
-          <div id="lesson-editor" class="hidden">
-            <form id="lesson-form">
-              <div class="lesson-fields"><label>Temat<input id="lesson-title" required maxlength="160" placeholder="Np. Project risks — lekcja Preply"></label><label>Data<input id="lesson-date" type="date" required></label><label>Lektor (opcjonalnie)<input id="lesson-tutor" maxlength="100"></label></div>
-              <label for="lesson-notes">Notatki z lekcji</label><textarea id="lesson-notes" rows="10" maxlength="20000" placeholder="Wklej notatki, poprawki i zadanie domowe z Preply…"></textarea>
-              <p class="library-subtitle">Do 20 000 znaków notatek i 100 zwrotów; łącznie do 55 KB na lekcję. Większy materiał podziel na kilka lekcji.</p>
-              <div class="lesson-toolbar"><button class="btn-primary" type="submit">Zapisz lekcję</button><button id="lesson-read" class="btn-ghost" type="button">Otwórz notatki w czytniku</button><button id="lesson-delete" class="btn-ghost" type="button">Usuń lekcję</button></div>
-            </form>
-            <div class="lesson-tabs" role="group" aria-label="Materiał lekcji"><button class="btn-ghost" data-lesson-tab="phrases" type="button" aria-pressed="true">Zwroty</button><button class="btn-ghost" data-lesson-tab="review" type="button" aria-pressed="false">Powtórki z lekcji</button><button class="btn-ghost" data-lesson-tab="speaking" type="button" aria-pressed="false">Tryb mówienia</button></div>
-            <div id="lesson-panel-phrases">
-              <h3>Zwroty z tej lekcji</h3>
-              <p class="library-subtitle">Dodaj całe wyrażenie, tłumaczenie i własny przykład. Zaznacz fragment notatek, aby przenieść go do formularza.</p>
-              <button id="phrase-selection" class="btn-ghost" type="button">Użyj zaznaczonego fragmentu</button>
-              <form id="phrase-form"><label>Zwrot po angielsku<input id="phrase-text" maxlength="120" required placeholder="Could I clarify whether you mean…?"></label><label>Tłumaczenie<input id="phrase-translation" maxlength="800" required placeholder="Czy mogę doprecyzować, czy masz na myśli…?"></label><label>Przykład (opcjonalnie)<textarea id="phrase-example" maxlength="1000" rows="2"></textarea></label><button id="phrase-submit" class="btn-primary" type="submit">Dodaj zwrot do lekcji</button><button id="phrase-cancel" class="btn-ghost hidden" type="button">Anuluj edycję</button></form>
-              <div id="lesson-phrases" class="lesson-phrases"></div>
-            </div>
-            <div id="lesson-panel-review" class="hidden">
-              <h3>Powtórki z lekcji</h3><label class="lesson-check"><input id="lesson-review-due" type="checkbox" checked> Tylko nowe i zaplanowane na dziś</label>
-              <p id="lesson-review-count" role="status"></p><div id="lesson-review-card" class="lesson-review-card"></div>
-              <div class="lesson-toolbar"><button id="lesson-review-reveal" class="btn-primary" type="button">Pokaż odpowiedź</button><button id="lesson-review-audio" class="btn-ghost" type="button">Posłuchaj zwrotu</button></div>
-              <div class="lesson-toolbar"><button data-lesson-grade="1" class="btn-ghost" type="button">Jeszcze nie pamiętam</button><button data-lesson-grade="3" class="btn-ghost" type="button">Z trudnością</button><button data-lesson-grade="5" class="btn-primary" type="button">Pamiętam</button></div>
-              <p class="library-subtitle">Najpierw spróbuj powiedzieć zwrot po angielsku. Ocena zapisuje termin kolejnej powtórki na Twoim koncie.</p>
-            </div>
-            <div id="lesson-panel-speaking" class="hidden">
-              <h3>Tryb mówienia</h3><p class="library-subtitle">Odpowiedz po angielsku i spróbuj użyć zwrotów z lekcji. Możesz też wpisać własne pytanie.</p>
-              <label for="speaking-prompt">Pytanie do ćwiczenia</label><textarea id="speaking-prompt" rows="2" maxlength="500"></textarea>
-              <div class="lesson-toolbar"><button id="speaking-next" class="btn-ghost" type="button">Inne pytanie</button><button id="speaking-listen" class="btn-ghost" type="button">Posłuchaj pytania</button></div>
-              <label class="lesson-check"><input id="speaking-transcribe" type="checkbox"> Włącz transkrypcję (jeśli przeglądarka obsługuje)</label>
-              <p class="library-subtitle">Transkrypcja może wysyłać dźwięk do usługi rozpoznawania mowy Twojej przeglądarki. Nagranie do odsłuchu jest tymczasowe; WordClick go nie przesyła ani nie zapisuje w bazie.</p>
-              <div class="lesson-toolbar"><button id="speaking-start" class="btn-primary" type="button">Nagraj odpowiedź</button><button id="speaking-stop" class="btn-ghost" type="button" disabled>Zatrzymaj</button><span id="speaking-status" role="status" aria-live="polite">Maksymalnie 2 minuty. Mikrofon uruchamia się po kliknięciu.</span></div>
-              <audio id="speaking-audio" class="hidden" controls></audio>
-              <label for="speaking-answer">Twoja odpowiedź / transkrypcja</label><textarea id="speaking-answer" rows="5" maxlength="3000" placeholder="Możesz poprawić transkrypcję lub wpisać odpowiedź ręcznie."></textarea>
-              <button id="speaking-save" class="btn-primary" type="button">Zapisz tekst odpowiedzi w lekcji</button><p class="library-subtitle">Ćwiczenie i odsłuch do samooceny. Aplikacja nie ocenia automatycznie wymowy ani gramatyki.</p>
-              <div id="speaking-history"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section id="phrases-view" class="view-panel"><div class="card"><h2>Moje zwroty</h2><p class="library-subtitle">Wyrażenia ze wszystkich Twoich lekcji, z tłumaczeniami i przykładami.</p><label for="phrases-search">Szukaj zwrotu</label><input id="phrases-search" type="search" placeholder="Zwrot, tłumaczenie lub temat lekcji"><label for="phrases-lesson-filter">Lekcja</label><select id="phrases-lesson-filter"><option value="all">Wszystkie lekcje</option></select><p id="phrases-count" role="status"></p><div id="phrases-library" class="lesson-phrases"></div></div></section>
   </main>
   <p class="translation-note">Tłumaczenia: słownik WordClick, Google Translate i MyMemory. Do usługi tłumaczenia trafia wybrane słowo oraz fragment zdania.</p>
 

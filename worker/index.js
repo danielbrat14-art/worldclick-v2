@@ -188,10 +188,6 @@ export default {
           if(!user)throw new HttpError(401,'Zaloguj się, aby korzystać ze swojej biblioteki.');
           return await vocabularyApi(request,env,user);
         }
-        if(path==='/api/lessons'||path.startsWith('/api/lessons/')) {
-          if(!user)throw new HttpError(401,'Zaloguj się, aby korzystać ze swoich lekcji.');
-          return await lessonsApi(request,env,user);
-        }
         if(path==='/api/translation-health' && request.method==='GET') {
           if(!user)throw new HttpError(401,'Zaloguj się, aby sprawdzić usługę.');
           const result=await translateText('upcoming');
@@ -208,7 +204,7 @@ export default {
       const html=path==='/'||path==='/index.html';
       const body=asset;
       const type=html?'text/html':path.endsWith('.css')?'text/css':path.endsWith('.svg')?'image/svg+xml':'text/javascript';
-      return new Response(request.method==='HEAD'?null:body,{headers:{'Content-Type':type+'; charset=utf-8','Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer','Permissions-Policy':'microphone=(self), camera=()','Content-Security-Policy':"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; media-src 'self' blob: https://translate.google.com; connect-src 'self' https://translate.googleapis.com https://api.mymemory.translated.net; frame-ancestors 'self' https://chatgpt.com"}});
+      return new Response(request.method==='HEAD'?null:body,{headers:{'Content-Type':type+'; charset=utf-8','Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer','Content-Security-Policy':"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; media-src 'self' https://translate.google.com; connect-src 'self' https://translate.googleapis.com https://api.mymemory.translated.net; frame-ancestors 'self' https://chatgpt.com"}});
     } catch(error) {
       if(!(error instanceof HttpError))console.error('WordClick request failed',error?.message);
       return json({error:error instanceof HttpError?error.message:'Wystąpił błąd. Twoje dane pozostają zapisane. Spróbuj ponownie.'},error.status||503);

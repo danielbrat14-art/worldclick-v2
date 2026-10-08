@@ -25,6 +25,8 @@ try {
   const homeHtml=await home.text();
   ok(homeHtml.includes('id="mode-news" class="card mode-panel active"'),true,'anonymous home opens the working news reader');
   ok(homeHtml.includes('/signin-with-chatgpt?return_to='),true,'public reader offers dispatch-owned login');
+  ok(homeHtml.includes('id="nav-lessons-btn"')||homeHtml.includes('id="nav-phrases-btn"'),false,'removed lesson and phrase sections are absent');
+  ok((await req('/api/lessons')).status,404,'removed lesson API is not exposed by the active Worker');
   ok((await req('/api/me',{user:null})).data,{user:null,storage:'none'},'anonymous account response contains no owner information');
   ok((await req('/api/vocabulary',{user:null,method:'POST',body:{word:'risk',translation:'ryzyko'}})).status,401,'anonymous cannot save vocabulary');
   ok((await req('/api/vocabulary',{user:null,method:'DELETE'})).status,401,'anonymous cannot clear vocabulary');

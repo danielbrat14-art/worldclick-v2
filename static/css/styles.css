@@ -124,36 +124,12 @@ body {
 /* Nav Tabs */
 .app-nav {
   display: flex;
-  flex-wrap: wrap;
   gap: 0.5rem;
   background: var(--bg-main);
   padding: 4px;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
 }
-
-.lessons-layout { display: grid; grid-template-columns: minmax(180px, 240px) minmax(0, 1fr); gap: 1.5rem; margin-top: 1rem; }
-.lesson-toolbar, .lesson-tabs { display: flex; flex-wrap: wrap; align-items: center; gap: .65rem; margin: .8rem 0 1.2rem; }
-.lesson-toolbar > div:first-child { flex: 1; }
-.lesson-fields { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: .8rem; }
-#lessons-view label, #phrases-view label { display: block; font-size: .85rem; font-weight: 600; margin: .65rem 0 .35rem; }
-#lessons-view input:not([type=checkbox]), #lessons-view textarea, #phrases-view input, #phrases-view select { width: 100%; padding: .7rem; border: 1px solid var(--border-color); border-radius: 9px; font: inherit; font-size: .9rem; background: #fff; color: var(--text-primary); box-sizing: border-box; }
-#lessons-view textarea { resize: vertical; }
-.lesson-list { display: grid; gap: .5rem; margin-top: .7rem; }
-.lesson-list button { text-align: left; padding: .8rem; border: 1px solid var(--border-color); border-radius: 10px; background: #fff; color: var(--text-primary); cursor: pointer; font: inherit; overflow-wrap: anywhere; }
-.lesson-list button.active, .lesson-tabs [aria-pressed=true] { background: var(--accent-light); border-color: var(--accent-primary); }
-.lesson-list small { display: block; color: var(--text-secondary); margin-top: .3rem; }
-.lesson-phrases { display: grid; gap: .8rem; margin-top: 1rem; }
-.lesson-phrase-card { padding: 1rem; border: 1px solid var(--border-color); border-radius: 12px; overflow-wrap: anywhere; }
-.lesson-phrase-card p { margin: .5rem 0; }
-.lesson-phrase-card small { color: var(--text-secondary); }
-.lesson-review-card { min-height: 150px; display: grid; align-content: center; gap: 1rem; padding: 1.5rem; border-radius: 14px; background: var(--accent-light); font-size: 1.2rem; overflow-wrap: anywhere; }
-.lesson-check { display: flex !important; align-items: center; gap: .5rem; }
-#lesson-status.error { color: #b91c1c; }
-#speaking-audio { width: 100%; margin: .8rem 0; }
-#lessons-view button:disabled { opacity: .5; cursor: not-allowed; }
-@media (max-width: 900px) { .header-container { flex-wrap: wrap; } .app-nav { overflow-x: auto; max-width: 100%; } }
-@media (max-width: 768px) { .app-nav { flex-wrap: nowrap; } .lessons-layout, .lesson-fields { grid-template-columns: 1fr; } .lesson-list { max-height: 230px; overflow-y: auto; } }
 
 .nav-tab {
   display: flex;
