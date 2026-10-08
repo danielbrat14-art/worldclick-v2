@@ -8,3 +8,8 @@ dist/
 .sites-runtime/
 test-results/
 supabase/.temp/
+node_modules/
+dist/
+.openai/hosting.json
+*.sqlite
+test-results/
