@@ -2,6 +2,8 @@
 export function returnHome() {
   document.getElementById('nav-reader-btn').click();
   document.querySelector('[data-mode="news"]').click();
+  const levelSelect = document.getElementById('news-level-select');
+  if (levelSelect) { levelSelect.value = 'all'; levelSelect.dispatchEvent(new Event('change')); }
   document.querySelector('[data-cat="all"]').click();
   document.getElementById('interactive-container').classList.add('hidden');
   document.getElementById('news-grid-expanded')?.classList.add('hidden');

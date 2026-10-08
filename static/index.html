@@ -129,6 +129,20 @@
           <button class="cat-pill" data-cat="Project Management">📋 Project Management (Mountain Goat, InfoQ, PM Majik)</button>
         </div>
 
+        <div class="news-level-filter">
+          <label for="news-level-select">Poziom angielskiego</label>
+          <select id="news-level-select" aria-describedby="news-level-help">
+            <option value="all">Wszystkie poziomy</option>
+            <option value="basic">Podstawowy (A1–A2)</option>
+            <option value="intermediate">Średniozaawansowany (B1–B2)</option>
+            <option value="advanced">Zaawansowany (C1–C2)</option>
+            <option value="unknown">Brak oceny</option>
+          </select>
+          <button id="reset-news-filters" type="button" class="btn-ghost">Wyczyść filtry</button>
+        </div>
+        <p id="news-level-help" class="news-filter-help">Orientacyjna trudność językowa na podstawie długości zdań i złożoności słów. Ocena z zajawki może zmienić się po otwarciu pełnego tekstu; nie jest to certyfikowana ocena CEFR.</p>
+        <p id="news-filter-count" class="news-filter-count" role="status" aria-live="polite"></p>
+
         <div id="news-loading" class="import-loading hidden">
           <div class="spinner"></div>
           <span>Aggregating real-time breaking news from 12 open sources...</span>

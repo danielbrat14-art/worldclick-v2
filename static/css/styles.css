@@ -254,6 +254,14 @@ body {
   flex-wrap: wrap;
 }
 
+.news-level-filter { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; }
+.news-level-filter label { font-weight: 600; font-size: .875rem; }
+.news-level-filter select { max-width: 100%; padding: .65rem .8rem; border: 1px solid var(--border-color); border-radius: 10px; background: #fff; color: var(--text-primary); font: inherit; font-size: .875rem; }
+.news-level-filter select:focus-visible, .library-card:focus-visible { outline: 3px solid var(--accent-primary); outline-offset: 3px; }
+.news-filter-help { color: var(--text-secondary); font-size: .8rem; line-height: 1.6; margin: .6rem 0; }
+.news-filter-count { color: var(--text-secondary); font-size: .825rem; margin: .6rem 0 1rem; }
+.news-level-badge { display: inline-block; margin-top: .6rem; padding: .3rem .6rem; border-radius: 8px; background: var(--accent-light); color: var(--accent-hover); font-size: .75rem; font-weight: 600; }
+
 .news-source-badge {
   color: white;
   font-size: 0.7rem;
