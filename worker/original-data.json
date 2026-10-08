@@ -1,0 +1,894 @@
+{
+  "NEWS_FEEDS": [
+    {
+      "source": "BBC News",
+      "category": "Świat",
+      "url": "http://feeds.bbci.co.uk/news/world/rss.xml",
+      "badge_color": "#bb1919"
+    },
+    {
+      "source": "The Guardian",
+      "category": "Świat",
+      "url": "https://www.theguardian.com/world/rss",
+      "badge_color": "#052962"
+    },
+    {
+      "source": "NPR News",
+      "category": "Świat",
+      "url": "https://feeds.npr.org/1001/rss.xml",
+      "badge_color": "#d92b2b"
+    },
+    {
+      "source": "CNBC Business",
+      "category": "Biznes",
+      "url": "https://www.cnbc.com/id/10001147/device/rss/rss.html",
+      "badge_color": "#002b66"
+    },
+    {
+      "source": "Entrepreneur",
+      "category": "Biznes",
+      "url": "https://www.entrepreneur.com/latest.rss",
+      "badge_color": "#c41230"
+    },
+    {
+      "source": "CNBC Markets",
+      "category": "Finanse",
+      "url": "https://www.cnbc.com/id/10000664/device/rss/rss.html",
+      "badge_color": "#006633"
+    },
+    {
+      "source": "Yahoo Finance",
+      "category": "Finanse",
+      "url": "https://finance.yahoo.com/news/rssindex",
+      "badge_color": "#6001d2"
+    },
+    {
+      "source": "TechCrunch",
+      "category": "Technologia",
+      "url": "https://techcrunch.com/feed/",
+      "badge_color": "#0284c7"
+    },
+    {
+      "source": "Ars Technica",
+      "category": "Technologia",
+      "url": "https://feeds.arstechnica.com/arstechnica/index",
+      "badge_color": "#d0392b"
+    },
+    {
+      "source": "Wired",
+      "category": "Technologia",
+      "url": "https://www.wired.com/feed/rss",
+      "badge_color": "#000000"
+    },
+    {
+      "source": "Mountain Goat Agile",
+      "category": "Project Management",
+      "url": "https://www.mountaingoatsoftware.com/blog/rss",
+      "badge_color": "#059669"
+    },
+    {
+      "source": "InfoQ Software & PM",
+      "category": "Project Management",
+      "url": "https://feed.infoq.com/",
+      "badge_color": "#0284c7"
+    },
+    {
+      "source": "PM Majik Leadership",
+      "category": "Project Management",
+      "url": "https://www.pmmajik.com/feed/",
+      "badge_color": "#d97706"
+    }
+  ],
+  "PARTICLES": [
+    "out of",
+    "out",
+    "in",
+    "up",
+    "down",
+    "off",
+    "on",
+    "away",
+    "back",
+    "over",
+    "through",
+    "about",
+    "ahead",
+    "around",
+    "aside",
+    "by",
+    "forward",
+    "along",
+    "with",
+    "for",
+    "to",
+    "into",
+    "upon",
+    "across"
+  ],
+  "KNOWN_PHRASES": {
+    "roll out": {
+      "phrase": "roll out",
+      "phrase_type": "Phrasal Verb",
+      "translation": "rozwijać, wprowadzać na rynek",
+      "possible_meanings": [
+        "rozwijać",
+        "wprowadzać na rynek",
+        "prezentować"
+      ]
+    },
+    "rolling out": {
+      "phrase": "rolling out",
+      "phrase_type": "Phrasal Verb",
+      "translation": "rozwijanie, wprowadzanie na rynek",
+      "possible_meanings": [
+        "rozwijanie",
+        "wprowadzanie na rynek"
+      ]
+    },
+    "rolled out": {
+      "phrase": "rolled out",
+      "phrase_type": "Phrasal Verb",
+      "translation": "rozwinął, wprowadził na rynek",
+      "possible_meanings": [
+        "rozwinął",
+        "wprowadził na rynek"
+      ]
+    },
+    "rolls out": {
+      "phrase": "rolls out",
+      "phrase_type": "Phrasal Verb",
+      "translation": "rozwija, wprowadza na rynek",
+      "possible_meanings": [
+        "rozwija",
+        "wprowadza na rynek"
+      ]
+    },
+    "scale up": {
+      "phrase": "scale up",
+      "phrase_type": "Phrasal Verb",
+      "translation": "zwiększać skalę, rozbudowywać",
+      "possible_meanings": [
+        "zwiększać skalę",
+        "rozbudowywać"
+      ]
+    },
+    "scaling up": {
+      "phrase": "scaling up",
+      "phrase_type": "Phrasal Verb",
+      "translation": "zwiększanie skali, rozbudowa",
+      "possible_meanings": [
+        "zwiększanie skali",
+        "rozbudowywanie"
+      ]
+    },
+    "scaled up": {
+      "phrase": "scaled up",
+      "phrase_type": "Phrasal Verb",
+      "translation": "zwiększono skalę, rozbudowano",
+      "possible_meanings": [
+        "zwiększono skalę"
+      ]
+    },
+    "scales up": {
+      "phrase": "scales up",
+      "phrase_type": "Phrasal Verb",
+      "translation": "zwiększa skalę",
+      "possible_meanings": [
+        "zwiększa skalę"
+      ]
+    },
+    "ramp up": {
+      "phrase": "ramp up",
+      "phrase_type": "Phrasal Verb",
+      "translation": "gwałtownie zwiększać, przyspieszać",
+      "possible_meanings": [
+        "gwałtownie zwiększać",
+        "intensyfikować"
+      ]
+    },
+    "ramping up": {
+      "phrase": "ramping up",
+      "phrase_type": "Phrasal Verb",
+      "translation": "gwałtowne zwiększanie, intensyfikacja",
+      "possible_meanings": [
+        "gwałtowne zwiększanie"
+      ]
+    },
+    "ramped up": {
+      "phrase": "ramped up",
+      "phrase_type": "Phrasal Verb",
+      "translation": "zwiększono gwałtownie",
+      "possible_meanings": [
+        "zwiększono gwałtownie"
+      ]
+    },
+    "carry out": {
+      "phrase": "carry out",
+      "phrase_type": "Phrasal Verb",
+      "translation": "przeprowadzać, realizować",
+      "possible_meanings": [
+        "przeprowadzać",
+        "realizować",
+        "wykonywać"
+      ]
+    },
+    "carrying out": {
+      "phrase": "carrying out",
+      "phrase_type": "Phrasal Verb",
+      "translation": "przeprowadzanie, realizacja",
+      "possible_meanings": [
+        "przeprowadzanie",
+        "realizowanie"
+      ]
+    },
+    "carried out": {
+      "phrase": "carried out",
+      "phrase_type": "Phrasal Verb",
+      "translation": "przeprowadzono, zrealizowano",
+      "possible_meanings": [
+        "przeprowadzono",
+        "zrealizowano"
+      ]
+    },
+    "carries out": {
+      "phrase": "carries out",
+      "phrase_type": "Phrasal Verb",
+      "translation": "przeprowadza, realizuje",
+      "possible_meanings": [
+        "przeprowadza",
+        "realizuje"
+      ]
+    },
+    "rule out": {
+      "phrase": "rule out",
+      "phrase_type": "Phrasal Verb",
+      "translation": "wykluczać, odrzucać",
+      "possible_meanings": [
+        "wykluczać",
+        "odrzucać"
+      ]
+    },
+    "ruled out": {
+      "phrase": "ruled out",
+      "phrase_type": "Phrasal Verb",
+      "translation": "wykluczono, odrzucono",
+      "possible_meanings": [
+        "wykluczono",
+        "odrzucono"
+      ]
+    },
+    "ruling out": {
+      "phrase": "ruling out",
+      "phrase_type": "Phrasal Verb",
+      "translation": "wykluczanie, odrzucanie",
+      "possible_meanings": [
+        "wykluczanie",
+        "odrzucanie"
+      ]
+    },
+    "phase out": {
+      "phrase": "phase out",
+      "phrase_type": "Phrasal Verb",
+      "translation": "wycofywać stopniowo",
+      "possible_meanings": [
+        "wycofywać stopniowo",
+        "stopniowo wygaszać"
+      ]
+    },
+    "phasing out": {
+      "phrase": "phasing out",
+      "phrase_type": "Phrasal Verb",
+      "translation": "stopniowe wycofywanie",
+      "possible_meanings": [
+        "stopniowe wycofywanie"
+      ]
+    },
+    "phased out": {
+      "phrase": "phased out",
+      "phrase_type": "Phrasal Verb",
+      "translation": "wycofano stopniowo",
+      "possible_meanings": [
+        "wycofano stopniowo"
+      ]
+    },
+    "crack down": {
+      "phrase": "crack down",
+      "phrase_type": "Phrasal Verb",
+      "translation": "wprowadzać surowe środki, zwalczać",
+      "possible_meanings": [
+        "zwalczać",
+        "wprowadzać rygor"
+      ]
+    },
+    "crack down on": {
+      "phrase": "crack down on",
+      "phrase_type": "Phrasal Verb",
+      "translation": "surowo zwalczać, ukrócić",
+      "possible_meanings": [
+        "surowo zwalczać",
+        "ukrócić"
+      ]
+    },
+    "cracking down on": {
+      "phrase": "cracking down on",
+      "phrase_type": "Phrasal Verb",
+      "translation": "surowe zwalczanie",
+      "possible_meanings": [
+        "surowe zwalczanie"
+      ]
+    },
+    "cracked down on": {
+      "phrase": "cracked down on",
+      "phrase_type": "Phrasal Verb",
+      "translation": "surowo ukrócono",
+      "possible_meanings": [
+        "surowo ukrócono"
+      ]
+    },
+    "wind down": {
+      "phrase": "wind down",
+      "phrase_type": "Phrasal Verb",
+      "translation": "stopniowo kończyć, wygaszać",
+      "possible_meanings": [
+        "stopniowo kończyć",
+        "wygaszać"
+      ]
+    },
+    "winding down": {
+      "phrase": "winding down",
+      "phrase_type": "Phrasal Verb",
+      "translation": "stopniowe wygaszanie",
+      "possible_meanings": [
+        "stopniowe wygaszanie"
+      ]
+    },
+    "wound down": {
+      "phrase": "wound down",
+      "phrase_type": "Phrasal Verb",
+      "translation": "wygaszono, zakończono",
+      "possible_meanings": [
+        "wygaszono"
+      ]
+    },
+    "speed up": {
+      "phrase": "speed up",
+      "phrase_type": "Phrasal Verb",
+      "translation": "przyspieszać",
+      "possible_meanings": [
+        "przyspieszać"
+      ]
+    },
+    "speeding up": {
+      "phrase": "speeding up",
+      "phrase_type": "Phrasal Verb",
+      "translation": "przyspieszanie",
+      "possible_meanings": [
+        "przyspieszanie"
+      ]
+    },
+    "sped up": {
+      "phrase": "sped up",
+      "phrase_type": "Phrasal Verb",
+      "translation": "przyspieszono",
+      "possible_meanings": [
+        "przyspieszono"
+      ]
+    },
+    "set up": {
+      "phrase": "set up",
+      "phrase_type": "Phrasal Verb",
+      "translation": "zakładać, organizować, tworzyć",
+      "possible_meanings": [
+        "zakładać",
+        "organizować",
+        "tworzyć"
+      ]
+    },
+    "setting up": {
+      "phrase": "setting up",
+      "phrase_type": "Phrasal Verb",
+      "translation": "zakładanie, tworzenie",
+      "possible_meanings": [
+        "zakładanie",
+        "tworzenie"
+      ]
+    },
+    "pick up": {
+      "phrase": "pick up",
+      "phrase_type": "Phrasal Verb",
+      "translation": "odbierać, podnosić, ożywiać się",
+      "possible_meanings": [
+        "odbierać",
+        "podnosić",
+        "ożywiać się"
+      ]
+    },
+    "picking up": {
+      "phrase": "picking up",
+      "phrase_type": "Phrasal Verb",
+      "translation": "odbieranie, ożywianie się",
+      "possible_meanings": [
+        "odbieranie",
+        "ożywianie się"
+      ]
+    },
+    "picked up": {
+      "phrase": "picked up",
+      "phrase_type": "Phrasal Verb",
+      "translation": "odebrano, ożywiło się",
+      "possible_meanings": [
+        "odebrano",
+        "ożywiło się"
+      ]
+    },
+    "find out": {
+      "phrase": "find out",
+      "phrase_type": "Phrasal Verb",
+      "translation": "dowiadywać się, odkrywać",
+      "possible_meanings": [
+        "dowiadywać się",
+        "odkrywać"
+      ]
+    },
+    "finding out": {
+      "phrase": "finding out",
+      "phrase_type": "Phrasal Verb",
+      "translation": "dowiadywanie się",
+      "possible_meanings": [
+        "dowiadywanie się"
+      ]
+    },
+    "found out": {
+      "phrase": "found out",
+      "phrase_type": "Phrasal Verb",
+      "translation": "dowiedziano się, odkryto",
+      "possible_meanings": [
+        "dowiedziano się",
+        "odkryto"
+      ]
+    },
+    "take off": {
+      "phrase": "take off",
+      "phrase_type": "Phrasal Verb",
+      "translation": "startować, odnieść nagły sukces",
+      "possible_meanings": [
+        "startować (samolot)",
+        "odnieść sukces"
+      ]
+    },
+    "taking off": {
+      "phrase": "taking off",
+      "phrase_type": "Phrasal Verb",
+      "translation": "startowanie, nabieranie tempa",
+      "possible_meanings": [
+        "startowanie",
+        "nabieranie tempa"
+      ]
+    },
+    "took off": {
+      "phrase": "took off",
+      "phrase_type": "Phrasal Verb",
+      "translation": "wystartował, nabrał tempa",
+      "possible_meanings": [
+        "wystartował"
+      ]
+    },
+    "work out": {
+      "phrase": "work out",
+      "phrase_type": "Phrasal Verb",
+      "translation": "sprawdzić się, wypracować, ćwiczyć",
+      "possible_meanings": [
+        "wypracować",
+        "sprawdzić się",
+        "ćwiczyć"
+      ]
+    },
+    "working out": {
+      "phrase": "working out",
+      "phrase_type": "Phrasal Verb",
+      "translation": "wypracowywanie, ćwiczenie",
+      "possible_meanings": [
+        "wypracowywanie",
+        "ćwiczenie"
+      ]
+    },
+    "worked out": {
+      "phrase": "worked out",
+      "phrase_type": "Phrasal Verb",
+      "translation": "wypracowano, sprawdziło się",
+      "possible_meanings": [
+        "wypracowano"
+      ]
+    },
+    "bring up": {
+      "phrase": "bring up",
+      "phrase_type": "Phrasal Verb",
+      "translation": "poruszać (temat), wychowywać",
+      "possible_meanings": [
+        "poruszać temat",
+        "wychowywać"
+      ]
+    },
+    "bringing up": {
+      "phrase": "bringing up",
+      "phrase_type": "Phrasal Verb",
+      "translation": "poruszanie tematu",
+      "possible_meanings": [
+        "poruszanie tematu"
+      ]
+    },
+    "brought up": {
+      "phrase": "brought up",
+      "phrase_type": "Phrasal Verb",
+      "translation": "poruszono, wychowano",
+      "possible_meanings": [
+        "poruszono temat",
+        "wychowano"
+      ]
+    },
+    "turn out": {
+      "phrase": "turn out",
+      "phrase_type": "Phrasal Verb",
+      "translation": "okazać się",
+      "possible_meanings": [
+        "okazać się",
+        "wytwarzać"
+      ]
+    },
+    "turning out": {
+      "phrase": "turning out",
+      "phrase_type": "Phrasal Verb",
+      "translation": "okazywanie się",
+      "possible_meanings": [
+        "okazywanie się"
+      ]
+    },
+    "turned out": {
+      "phrase": "turned out",
+      "phrase_type": "Phrasal Verb",
+      "translation": "okazało się",
+      "possible_meanings": [
+        "okazało się"
+      ]
+    },
+    "point out": {
+      "phrase": "point out",
+      "phrase_type": "Phrasal Verb",
+      "translation": "wskazywać, zwracać uwagę",
+      "possible_meanings": [
+        "wskazywać",
+        "zwracać uwagę"
+      ]
+    },
+    "pointing out": {
+      "phrase": "pointing out",
+      "phrase_type": "Phrasal Verb",
+      "translation": "wskazywanie",
+      "possible_meanings": [
+        "wskazywanie"
+      ]
+    },
+    "pointed out": {
+      "phrase": "pointed out",
+      "phrase_type": "Phrasal Verb",
+      "translation": "wskazał, zwrócił uwagę",
+      "possible_meanings": [
+        "wskazał",
+        "zwrócił uwagę"
+      ]
+    },
+    "stay out": {
+      "phrase": "stay out",
+      "phrase_type": "Phrasal Verb",
+      "translation": "trzymać się z dala",
+      "possible_meanings": [
+        "trzymać się z dala"
+      ]
+    },
+    "staying out": {
+      "phrase": "staying out",
+      "phrase_type": "Phrasal Verb",
+      "translation": "trzymanie się z dala",
+      "possible_meanings": [
+        "trzymanie się z dala"
+      ]
+    },
+    "stay out of": {
+      "phrase": "stay out of",
+      "phrase_type": "Phrasal Verb",
+      "translation": "trzymać się z dala od",
+      "possible_meanings": [
+        "trzymać się z dala od"
+      ]
+    },
+    "staying out of": {
+      "phrase": "staying out of",
+      "phrase_type": "Phrasal Verb",
+      "translation": "trzymanie się z dala od",
+      "possible_meanings": [
+        "trzymanie się z dala od"
+      ]
+    },
+    "step down": {
+      "phrase": "step down",
+      "phrase_type": "Phrasal Verb",
+      "translation": "ustępować ze stanowiska, rezygnować",
+      "possible_meanings": [
+        "ustępować ze stanowiska",
+        "rezygnować"
+      ]
+    },
+    "stepping down": {
+      "phrase": "stepping down",
+      "phrase_type": "Phrasal Verb",
+      "translation": "ustępowanie ze stanowiska",
+      "possible_meanings": [
+        "ustępowanie ze stanowiska"
+      ]
+    },
+    "stepped down": {
+      "phrase": "stepped down",
+      "phrase_type": "Phrasal Verb",
+      "translation": "ustąpił ze stanowiska",
+      "possible_meanings": [
+        "ustąpił ze stanowiska"
+      ]
+    },
+    "step up": {
+      "phrase": "step up",
+      "phrase_type": "Phrasal Verb",
+      "translation": "zwiększać wysiłki, przyspieszać",
+      "possible_meanings": [
+        "zwiększać wysiłki",
+        "przyspieszać"
+      ]
+    },
+    "stepping up": {
+      "phrase": "stepping up",
+      "phrase_type": "Phrasal Verb",
+      "translation": "zwiększanie wysiłków",
+      "possible_meanings": [
+        "zwiększanie wysiłków"
+      ]
+    },
+    "stepped up": {
+      "phrase": "stepped up",
+      "phrase_type": "Phrasal Verb",
+      "translation": "zwiększono wysiłki",
+      "possible_meanings": [
+        "zwiększono wysiłki"
+      ]
+    },
+    "tit for tat": {
+      "phrase": "tit for tat",
+      "phrase_type": "Idiom / Expression",
+      "translation": "wet za wet, odwetowy",
+      "possible_meanings": [
+        "wet za wet",
+        "działanie odwetowe"
+      ]
+    },
+    "tit-for-tat": {
+      "phrase": "tit-for-tat",
+      "phrase_type": "Idiom / Expression",
+      "translation": "wet za wet, odwetowy",
+      "possible_meanings": [
+        "odwetowy",
+        "wet za wet"
+      ]
+    },
+    "when it comes to": {
+      "phrase": "when it comes to",
+      "phrase_type": "Idiom / Expression",
+      "translation": "jeśli chodzi o, w kwestii",
+      "possible_meanings": [
+        "jeśli chodzi o",
+        "w kwestii"
+      ]
+    }
+  },
+  "FALLBACK_DICTIONARY": {
+    "means": {
+      "word": "means",
+      "translation": "oznacza, środki, sposób",
+      "pronunciation": "/miːnz/",
+      "possible_meanings": [
+        "oznacza",
+        "środki",
+        "sposób",
+        "możliwości",
+        "droga"
+      ]
+    },
+    "district": {
+      "word": "district",
+      "translation": "dzielnica, dystrykt, okręg",
+      "pronunciation": "/ˈdɪstrɪkt/",
+      "possible_meanings": [
+        "dzielnica",
+        "dystrykt",
+        "okręg",
+        "rejon"
+      ]
+    },
+    "buzzing": {
+      "word": "buzzing",
+      "translation": "brzęczenie, buczenie",
+      "pronunciation": "/ˈbʌzɪŋ/",
+      "possible_meanings": [
+        "brzęczenie",
+        "buczenie",
+        "bzykanie"
+      ]
+    },
+    "believes": {
+      "word": "believes",
+      "translation": "uważa, wierzy",
+      "pronunciation": "/bɪˈliːvz/",
+      "possible_meanings": [
+        "uważa",
+        "wierzy",
+        "jest przekonany"
+      ]
+    },
+    "sway": {
+      "word": "sway",
+      "translation": "wywierać wpływ, chwiać, przekonywać",
+      "pronunciation": "/sweɪ/",
+      "possible_meanings": [
+        "wywierać wpływ",
+        "przekonywać",
+        "kołysać"
+      ]
+    },
+    "yields": {
+      "word": "yields",
+      "translation": "rentowności, zyski, plony",
+      "pronunciation": "/jiːldz/",
+      "possible_meanings": [
+        "rentowności (obligacji)",
+        "zyski",
+        "plony",
+        "dawać wynik"
+      ]
+    },
+    "spike": {
+      "word": "spike",
+      "translation": "gwałtowny wzrost, skok",
+      "pronunciation": "/spaɪk/",
+      "possible_meanings": [
+        "gwałtowny wzrost",
+        "skok cen/rentowności",
+        "szpic"
+      ]
+    },
+    "debt": {
+      "word": "debt",
+      "translation": "dług, zadłużenie",
+      "pronunciation": "/det/",
+      "possible_meanings": [
+        "dług",
+        "zadłużenie",
+        "zobowiązanie"
+      ]
+    },
+    "risk": {
+      "word": "risk",
+      "translation": "ryzyko, zagrożenie",
+      "pronunciation": "/rɪsk/",
+      "possible_meanings": [
+        "ryzyko",
+        "zagrożenie",
+        "ryzykować"
+      ]
+    }
+  },
+  "COMMON_PHRASAL_VERB_ROOTS": [
+    "act",
+    "add",
+    "back",
+    "blew",
+    "blow",
+    "blown",
+    "break",
+    "bring",
+    "broke",
+    "broken",
+    "brought",
+    "build",
+    "built",
+    "call",
+    "came",
+    "carry",
+    "check",
+    "clean",
+    "clear",
+    "come",
+    "count",
+    "crack",
+    "cut",
+    "did",
+    "do",
+    "done",
+    "draw",
+    "drawn",
+    "drew",
+    "drop",
+    "end",
+    "fall",
+    "fallen",
+    "fell",
+    "fill",
+    "find",
+    "found",
+    "gave",
+    "get",
+    "give",
+    "given",
+    "go",
+    "gone",
+    "got",
+    "gotten",
+    "grew",
+    "grow",
+    "grown",
+    "hand",
+    "hang",
+    "held",
+    "hold",
+    "hung",
+    "keep",
+    "kept",
+    "kick",
+    "knock",
+    "laid",
+    "lay",
+    "lead",
+    "led",
+    "let",
+    "look",
+    "made",
+    "make",
+    "paid",
+    "pass",
+    "pay",
+    "phase",
+    "pick",
+    "point",
+    "pull",
+    "put",
+    "ramp",
+    "ran",
+    "rule",
+    "run",
+    "scale",
+    "set",
+    "show",
+    "showed",
+    "shown",
+    "shut",
+    "stand",
+    "start",
+    "step",
+    "stood",
+    "take",
+    "taken",
+    "talk",
+    "think",
+    "thought",
+    "threw",
+    "throw",
+    "thrown",
+    "took",
+    "turn",
+    "use",
+    "walk",
+    "went",
+    "wind",
+    "work",
+    "wound",
+    "write",
+    "written",
+    "wrote"
+  ]
+}

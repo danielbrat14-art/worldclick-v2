@@ -1,6 +1,7 @@
 import { registerWordClickTools } from './webmcp.js';
 import { initHomeNavigation } from './home.js';
 import { estimateDifficulty, filterNewsArticles, difficultyDescription } from './difficulty.js';
+import { initLessons, stopLessonSpeaking } from './lessons.js';
 /**
  * WordClick v2 Ultimate — Main Controller with Live News Feed
  */
@@ -55,6 +56,21 @@ document.addEventListener('DOMContentLoaded', async () => {
   initKaraokePlayer();
   initStudyTab();
   initFontSizeControls();
+  initLessons();
+  window.addEventListener('lesson-read', event => {
+    readerRequestId++;
+    document.getElementById('nav-reader-btn').click();
+    document.querySelector('[data-mode="paste"]').click();
+    const {notes,title}=event.detail;
+    document.getElementById('text-input').value=notes;
+    updateWordCounter(notes);
+    document.getElementById('article-display-title').textContent=title||'Notatki z lekcji';
+    document.getElementById('article-display-title').classList.remove('hidden');
+    document.getElementById('article-meta-info').textContent=difficultyDescription(notes);
+    renderInteractiveText(notes,document.getElementById('interactive-text-body'),handleWordClick);
+    document.getElementById('interactive-container').classList.remove('hidden');
+    document.getElementById('interactive-container').scrollIntoView({behavior:'smooth',block:'start'});
+  });
   initHomeNavigation(() => { readerRequestId++; showLibraryStatus(); });
 
   window.addEventListener('vocab-changed', () => { updateVocabBadge(); if(document.getElementById('vocab-view').classList.contains('active'))renderVocabularyGrid(document.getElementById('vocab-search').value.trim()); });
@@ -107,6 +123,7 @@ function initNavigation() {
 
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
+      stopLessonSpeaking();
       const targetId = tab.dataset.target;
 
       tabs.forEach(t => t.classList.remove('active'));
