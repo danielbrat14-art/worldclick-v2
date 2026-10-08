@@ -1,5 +1,6 @@
 import { registerWordClickTools } from './webmcp.js';
 import { initHomeNavigation } from './home.js';
+import { estimateDifficulty, filterNewsArticles, difficultyDescription } from './difficulty.js';
 /**
  * WordClick v2 Ultimate — Main Controller with Live News Feed
  */
@@ -190,6 +191,7 @@ function initModeSelector() {
 
 let allFetchedArticles = [];
 let activeNewsCategory = 'all';
+let activeNewsLevel = 'all';
 
 /* Live Auto-Updating News Feed Controller */
 async function initNewsFeed() {
@@ -197,8 +199,21 @@ async function initNewsFeed() {
   const loadingEl = document.getElementById('news-loading');
   const refreshBtn = document.getElementById('refresh-news-btn');
   const catPills = document.querySelectorAll('.cat-pill');
+  const levelSelect = document.getElementById('news-level-select');
+  const countEl = document.getElementById('news-filter-count');
+  let feedRequestId = 0;
 
   if (!gridEl) return;
+
+  levelSelect.addEventListener('change', () => {
+    activeNewsLevel = levelSelect.value;
+    renderNewsGrid();
+  });
+  document.getElementById('reset-news-filters').addEventListener('click', () => {
+    levelSelect.value = 'all';
+    activeNewsLevel = 'all';
+    document.querySelector('[data-cat="all"]').click();
+  });
 
   catPills.forEach(pill => {
     pill.addEventListener('click', () => {
@@ -210,10 +225,14 @@ async function initNewsFeed() {
   });
 
   async function loadFeed() {
+    const requestId = ++feedRequestId;
     loadingEl.classList.remove('hidden');
+    countEl.textContent = 'Pobieranie artykułów…';
     gridEl.innerHTML = '';
 
-    allFetchedArticles = await fetchLiveNewsFeed();
+    const articles = await fetchLiveNewsFeed();
+    if (requestId !== feedRequestId) return;
+    allFetchedArticles = articles.map(article => ({...article, difficulty: estimateDifficulty(`${article.title}. ${article.description || ''}`)}));
     loadingEl.classList.add('hidden');
 
     renderNewsGrid();
@@ -222,12 +241,11 @@ async function initNewsFeed() {
   function renderNewsGrid() {
     gridEl.innerHTML = '';
 
-    const filtered = activeNewsCategory === 'all' 
-      ? allFetchedArticles 
-      : allFetchedArticles.filter(a => a.category === activeNewsCategory);
+    const filtered = filterNewsArticles(allFetchedArticles, activeNewsCategory, activeNewsLevel);
+    countEl.textContent = `Pasujące artykuły: ${filtered.length} z ${allFetchedArticles.length}`;
 
     if (filtered.length === 0) {
-      gridEl.innerHTML = `<div class="empty-state" style="grid-column: 1/-1;"><p>Brak artykułów w tej kategorii. Wybierz inną kategorię lub odśwież feed.</p></div>`;
+      gridEl.innerHTML = `<div class="empty-state" style="grid-column: 1/-1;"><p>Brak artykułów dla wybranych filtrów. Zmień poziom lub kategorię, użyj „Wyczyść filtry” albo odśwież feed.</p></div>`;
       return;
     }
 
@@ -283,6 +301,9 @@ async function initNewsFeed() {
   function createNewsCard(article) {
     const card = document.createElement('div');
     card.className = 'library-card';
+    card.tabIndex = 0;
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-label', `Otwórz: ${article.title}`);
     card.innerHTML = `
       <div>
         <div class="news-card-header">
@@ -291,12 +312,16 @@ async function initNewsFeed() {
         </div>
         <h4 class="preset-title">${escapeHtml(article.title)}</h4>
         <p class="preset-excerpt">${escapeHtml(article.description || article.title)}</p>
+        <span class="news-level-badge" title="Orientacyjna ocena na podstawie zajawki">${escapeHtml(article.difficulty.label)}${article.difficulty.level === 'unknown' ? '' : ' · orientacyjnie'}</span>
       </div>
       <div class="news-time">🌐 Click to read full article</div>
     `;
 
     card.addEventListener('click', () => {
       loadNewsArticleIntoReader(article);
+    });
+    card.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); card.click(); }
     });
 
     return card;
@@ -343,6 +368,7 @@ async function loadNewsArticleIntoReader(article) {
   }
 
   if(requestId!==readerRequestId)return;
+  metaInfo.textContent = `Live News from ${article.source} • ${difficultyDescription(cleanTextToRead)} • Click any word for translation`;
   renderInteractiveText(cleanTextToRead, articleBody, handleWordClick);
   readerContainer.classList.remove('hidden');
   readerContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -380,7 +406,7 @@ function initUrlImporter() {
         displayTitle.classList.add('hidden');
       }
 
-      metaInfo.textContent = `Imported from ${article.domain || 'web'} • ${article.word_count || 0} words • Click any word for translation`;
+      metaInfo.textContent = `Imported from ${article.domain || 'web'} • ${article.word_count || 0} words • ${difficultyDescription(article.content)} • Click any word for translation`;
 
       renderInteractiveText(article.content, articleBody, handleWordClick);
       readerContainer.classList.remove('hidden');
@@ -444,7 +470,7 @@ function initInputHandlers() {
 
     readerRequestId++;
     displayTitle.classList.add('hidden');
-    metaInfo.textContent = `Interactive Reader — Click any word or phrasal verb for instant Polish translation`;
+    metaInfo.textContent = `${difficultyDescription(text)} • Click any word or phrasal verb for instant Polish translation`;
 
     renderInteractiveText(text, articleBody, handleWordClick);
     readerContainer.classList.remove('hidden');
@@ -468,7 +494,7 @@ function initLibraryHandlers() {
 
       displayTitle.textContent = preset.title;
       displayTitle.classList.remove('hidden');
-      metaInfo.textContent = `Featured Article • Click any word or phrasal verb for translation`;
+      metaInfo.textContent = `Featured Article • ${difficultyDescription(preset.content)} • Click any word or phrasal verb for translation`;
 
       renderInteractiveText(preset.content, articleBody, handleWordClick);
       readerContainer.classList.remove('hidden');
